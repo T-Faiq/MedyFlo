@@ -19,8 +19,8 @@ const SITE_CONFIG = {
     email: "audit@medyflo.com"
   },
   socialLinks: {
-    facebook: "https://www.facebook.com/", // <-- Add your Facebook URL here
-    instagram: "https://www.instagram.com/" // <-- Add your Instagram URL here
+    facebook: "https://www.facebook.com/MedyFloRCM", // <-- Add your Facebook URL here
+    instagram: "https://www.instagram.com/medyflo" // <-- Add your Instagram URL here
   },
   navigation: [
     { label: "Solutions", id: "solutions" },
