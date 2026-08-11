@@ -1,30 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { 
-  BarChart3, 
-  ShieldCheck, 
-  ClipboardCheck, 
-  TrendingUp, 
-  ChevronDown, 
-  Phone, 
-  Mail, 
-  CheckCircle2,
-  ArrowRight,
-  Menu,
-  X,
-  CreditCard,
-  Users,
-  Clock,
-  Tag,
-  AlertOctagon,
-  UserMinus,
-  Activity,
-  DollarSign,
-  FileText,
-  Lock,
-  Facebook,
-  Instagram
+  BarChart3, ShieldCheck, ClipboardCheck, TrendingUp, ChevronDown, 
+  Phone, Mail, CheckCircle2, ArrowRight, Menu, X, CreditCard, Users, 
+  Clock, Tag, AlertOctagon, UserMinus, Activity, DollarSign, FileText, 
+  Lock, Facebook, Instagram
 } from 'lucide-react';
+
+// ==========================================
+// ⚙️ SITE CONFIGURATION - UPDATE THESE VALUES
+// ==========================================
+const SITE_CONFIG = {
+  brandName: "MedyFlo",
+  brandTagline: "Focus On Care. We Handle Billing.",
+  contact: {
+    phoneDisplay: "(800) 555-2847",
+    phoneUri: "8005552847",
+    email: "audit@medyflo.com"
+  },
+  socialLinks: {
+    facebook: "https://www.facebook.com/", // <-- Add your Facebook URL here
+    instagram: "https://www.instagram.com/" // <-- Add your Instagram URL here
+  },
+  navigation: [
+    { label: "Solutions", id: "solutions" },
+    { label: "Services", id: "services" },
+    { label: "ROI Calculator", id: "calculator" },
+    { label: "FAQ", id: "faq" }
+  ]
+};
+// ==========================================
 
 const App = () => {
   const [currentView, setCurrentView] = useState('home');
@@ -60,10 +65,7 @@ const App = () => {
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
       
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
+      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
     }
   };
 
@@ -165,21 +167,22 @@ const App = () => {
               </div>
               <div>
                 <div className="text-2xl font-extrabold tracking-tight text-slate-900 flex items-center">
-                  Medy<span className="text-teal-600">Flo</span>
+                  {SITE_CONFIG.brandName.substring(0, 4)}<span className="text-teal-600">{SITE_CONFIG.brandName.substring(4)}</span>
                 </div>
-                <div className="text-[9px] font-bold text-slate-400 tracking-wider uppercase">Focus On Care. We Handle Billing.</div>
+                <div className="text-[9px] font-bold text-slate-400 tracking-wider uppercase">{SITE_CONFIG.brandTagline}</div>
               </div>
             </div>
             
             <nav className="hidden md:flex items-center gap-8">
-              {currentView === 'home' && (
-                <>
-                  <button onClick={() => handleScroll('solutions')} className="text-sm font-semibold text-slate-600 hover:text-teal-600 transition-colors">Solutions</button>
-                  <button onClick={() => handleScroll('services')} className="text-sm font-semibold text-slate-600 hover:text-teal-600 transition-colors">Services</button>
-                  <button onClick={() => handleScroll('calculator')} className="text-sm font-semibold text-slate-600 hover:text-teal-600 transition-colors">ROI Calculator</button>
-                  <button onClick={() => handleScroll('faq')} className="text-sm font-semibold text-slate-600 hover:text-teal-600 transition-colors">FAQ</button>
-                </>
-              )}
+              {currentView === 'home' && SITE_CONFIG.navigation.map((nav, index) => (
+                <button 
+                  key={index} 
+                  onClick={() => handleScroll(nav.id)} 
+                  className="text-sm font-semibold text-slate-600 hover:text-teal-600 transition-colors"
+                >
+                  {nav.label}
+                </button>
+              ))}
               {currentView !== 'home' && (
                 <button onClick={() => setCurrentView('home')} className="text-sm font-semibold text-slate-600 hover:text-teal-600 transition-colors">Back to Home</button>
               )}
@@ -203,14 +206,15 @@ const App = () => {
 
         {isMenuOpen && (
           <nav className="md:hidden bg-white border-b border-slate-200 absolute w-full shadow-2xl py-6 flex flex-col items-center gap-4 animate-in slide-in-from-top duration-200">
-            {currentView === 'home' ? (
-              <>
-                <button onClick={() => handleScroll('solutions')} className="font-bold text-slate-700 text-lg hover:text-teal-600">Solutions</button>
-                <button onClick={() => handleScroll('services')} className="font-bold text-slate-700 text-lg hover:text-teal-600">Services</button>
-                <button onClick={() => handleScroll('calculator')} className="font-bold text-slate-700 text-lg hover:text-teal-600">ROI Calculator</button>
-                <button onClick={() => handleScroll('faq')} className="font-bold text-slate-700 text-lg hover:text-teal-600">FAQ</button>
-              </>
-            ) : (
+            {currentView === 'home' ? SITE_CONFIG.navigation.map((nav, index) => (
+              <button 
+                key={index} 
+                onClick={() => handleScroll(nav.id)} 
+                className="font-bold text-slate-700 text-lg hover:text-teal-600"
+              >
+                {nav.label}
+              </button>
+            )) : (
               <button onClick={() => { setCurrentView('home'); setIsMenuOpen(false); }} className="font-bold text-slate-700 text-lg hover:text-teal-600">Back to Home</button>
             )}
             <button 
@@ -223,6 +227,7 @@ const App = () => {
         )}
       </header>
 
+      {/* Pages Handled Here (Terms, Privacy) */}
       {currentView === 'terms' ? (
         <main className="pt-32 pb-24 max-w-4xl mx-auto px-4 sm:px-6">
           <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-xl border border-slate-200">
@@ -230,24 +235,17 @@ const App = () => {
               <FileText size={14} /> Legal Documentation
             </div>
             <h1 className="text-3xl sm:text-4xl font-black text-slate-900 mb-6">Terms of Service</h1>
-            <p className="text-slate-500 text-sm mb-8">Last updated: August 2026</p>
             
             <div className="space-y-6 text-slate-600 leading-relaxed text-sm sm:text-base">
               <h3 className="text-xl font-bold text-slate-900 pt-4">1. Acceptance of Terms</h3>
-              <p>By accessing or using the MedyFlo website, tools, and Revenue Cycle Management (RCM) services, you agree to comply with and be bound by these Terms of Service.</p>
+              <p>By accessing or using the {SITE_CONFIG.brandName} website, you agree to comply with and be bound by these Terms.</p>
               
               <h3 className="text-xl font-bold text-slate-900 pt-4">2. Medical Billing & RCM Services</h3>
-              <p>MedyFlo provides claims submission, insurance verification, accounts receivable management, and revenue optimization consulting.</p>
-
-              <h3 className="text-xl font-bold text-slate-900 pt-4">3. HIPAA Compliance & Patient Data</h3>
-              <p>Both parties agree to comply with the Health Insurance Portability and Accountability Act (HIPAA) and safeguard Protected Health Information (PHI).</p>
+              <p>{SITE_CONFIG.brandName} provides claims submission, insurance verification, accounts receivable management, and revenue optimization consulting.</p>
             </div>
 
             <div className="mt-12 pt-8 border-t border-slate-200">
-              <button 
-                onClick={() => setCurrentView('home')}
-                className="bg-slate-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-teal-600 transition-colors shadow-md"
-              >
+              <button onClick={() => setCurrentView('home')} className="bg-slate-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-teal-600 transition-colors shadow-md">
                 ← Return to Home
               </button>
             </div>
@@ -260,21 +258,14 @@ const App = () => {
               <Lock size={14} /> Data Security & Trust
             </div>
             <h1 className="text-3xl sm:text-4xl font-black text-slate-900 mb-6">Privacy Policy</h1>
-            <p className="text-slate-500 text-sm mb-8">Last updated: August 2026</p>
             
             <div className="space-y-6 text-slate-600 leading-relaxed text-sm sm:text-base">
               <h3 className="text-xl font-bold text-slate-900 pt-4">1. Information We Collect</h3>
               <p>We collect practice details, professional email addresses, phone numbers, and optional revenue metrics provided via our audit questionnaires.</p>
-              
-              <h3 className="text-xl font-bold text-slate-900 pt-4">2. How We Use Your Data</h3>
-              <p>Your information is used strictly to provide consultation reports and fulfill contractual billing agreements.</p>
             </div>
 
             <div className="mt-12 pt-8 border-t border-slate-200">
-              <button 
-                onClick={() => setCurrentView('home')}
-                className="bg-slate-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-teal-600 transition-colors shadow-md"
-              >
+              <button onClick={() => setCurrentView('home')} className="bg-slate-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-teal-600 transition-colors shadow-md">
                 ← Return to Home
               </button>
             </div>
@@ -282,6 +273,7 @@ const App = () => {
         </main>
       ) : (
         <main>
+          {/* Hero Section */}
           <section className="relative pt-32 pb-20 lg:pt-44 lg:pb-32 overflow-hidden bg-white border-b border-slate-200">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
               <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -298,16 +290,10 @@ const App = () => {
                   </p>
 
                   <div className="flex flex-col sm:flex-row gap-4 mb-10">
-                    <button 
-                      onClick={() => handleScroll('contact')}
-                      className="bg-teal-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-teal-700 transition-all shadow-lg active:scale-95"
-                    >
+                    <button onClick={() => handleScroll('contact')} className="bg-teal-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-teal-700 transition-all shadow-lg active:scale-95">
                       Get Started Today
                     </button>
-                    <button 
-                      onClick={() => handleScroll('services')}
-                      className="bg-slate-100 border border-slate-200 text-slate-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-slate-200 transition-all active:scale-95"
-                    >
+                    <button onClick={() => handleScroll('services')} className="bg-slate-100 border border-slate-200 text-slate-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-slate-200 transition-all active:scale-95">
                       Explore Services
                     </button>
                   </div>
@@ -318,17 +304,13 @@ const App = () => {
                      <div className="absolute top-1/2 -translate-y-12 right-0 opacity-10 pointer-events-none">
                         <Activity size={300} className="text-teal-600" />
                      </div>
-                     
                     <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
                       <ShieldCheck className="text-teal-600" size={24} /> Comprehensive RCM
                     </h3>
-                    
                     <div className="space-y-4">
                       {["Claims Submission", "Insurance Verification", "Payment Posting", "AR Follow-up", "Denial Management", "Credentialing"].map((item, i) => (
                         <div key={i} className="flex items-center gap-4 border-b border-slate-200 pb-3 last:border-0 last:pb-0">
-                          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-teal-600 shadow-sm">
-                            <CheckCircle2 size={16} />
-                          </div>
+                          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-teal-600 shadow-sm"><CheckCircle2 size={16} /></div>
                           <span className="font-semibold text-slate-700">{item}</span>
                         </div>
                       ))}
@@ -339,30 +321,25 @@ const App = () => {
             </div>
           </section>
 
+          {/* Solutions Section */}
           <section id="solutions" className="py-24 bg-slate-50 relative">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
                 <h2 className="text-4xl sm:text-5xl font-black text-slate-900 mb-4">Pain in Medical Billing?</h2>
                 <p className="text-xl text-teal-600 font-bold">You focus on patients — we fix the billing.</p>
               </div>
-              
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="bg-white p-8 lg:p-12 rounded-3xl border border-slate-200 shadow-lg flex flex-col items-center text-center relative">
-                  <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center text-slate-900 mb-6">
-                    <UserMinus size={48} />
-                  </div>
+                  <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center text-slate-900 mb-6"><UserMinus size={48} /></div>
                   <h3 className="text-3xl font-black text-slate-900 mb-4 leading-tight">Less Time.<br/>Less Stress.<br/><span className="text-teal-600">More Revenue.</span></h3>
                   <p className="text-slate-600 leading-relaxed font-medium bg-slate-50 p-4 rounded-xl border border-slate-100">
                     We take care of the billing so you can focus on what matters most. Let's remove the pain. Together.
                   </p>
                 </div>
-
                 <div className="space-y-4">
                   {painPoints.map((point, idx) => (
                     <div key={idx} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex items-start gap-4">
-                      <div className="bg-slate-50 p-3 rounded-xl shrink-0">
-                        {point.icon}
-                      </div>
+                      <div className="bg-slate-50 p-3 rounded-xl shrink-0">{point.icon}</div>
                       <div>
                         <h4 className="text-lg font-bold text-slate-900">{point.title}</h4>
                         <p className="text-sm font-semibold text-slate-500 mb-1">{point.subtitle}</p>
@@ -375,8 +352,10 @@ const App = () => {
             </div>
           </section>
 
+          {/* Iceberg/Problem Section */}
           <section className="py-24 bg-slate-900 text-white relative overflow-hidden">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+             {/* Same content as previous version */}
+             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
               <div className="text-center max-w-3xl mx-auto mb-16">
                 <h2 className="text-4xl sm:text-5xl font-black mt-2 mb-4">
                   The problem is bigger <br/><span className="text-teal-400">than it looks.</span>
@@ -404,14 +383,16 @@ const App = () => {
                   onClick={() => handleScroll('contact')}
                   className="bg-teal-500 text-slate-950 px-8 py-4 rounded-full font-bold hover:bg-teal-400 transition-all inline-flex items-center gap-2 shadow-xl shadow-teal-900/50"
                 >
-                  See What MedyFlo Uncovers <ArrowRight size={18} />
+                  See What {SITE_CONFIG.brandName} Uncovers <ArrowRight size={18} />
                 </button>
               </div>
             </div>
           </section>
 
+          {/* Services Section */}
           <section id="services" className="py-24 lg:py-32 bg-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+             {/* Same content as previous version */}
+             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-20">
                 <h2 className="text-4xl sm:text-5xl font-black text-slate-900 mt-2 mb-4">
                   Medical Billing, <span className="text-teal-600">Done Right.</span>
@@ -442,12 +423,14 @@ const App = () => {
             </div>
           </section>
 
+          {/* Calculator Section */}
           <section id="calculator" className="py-24 bg-slate-900 text-white relative">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6">
+             {/* Same content as previous version */}
+             <div className="max-w-4xl mx-auto px-4 sm:px-6">
               <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 sm:p-12 shadow-2xl">
                 <div className="text-center mb-10">
                   <h2 className="text-3xl sm:text-4xl font-black">Calculate Your Practice Potential</h2>
-                  <p className="text-slate-400 text-sm mt-2">See how much additional revenue MedyFlo can capture for your clinic.</p>
+                  <p className="text-slate-400 text-sm mt-2">See how much additional revenue {SITE_CONFIG.brandName} can capture for your clinic.</p>
                 </div>
 
                 <div className="space-y-8 mb-10">
@@ -457,10 +440,7 @@ const App = () => {
                       <span className="text-2xl font-black text-teal-400">${monthlyRevenue.toLocaleString()}</span>
                     </div>
                     <input 
-                      type="range" 
-                      min="20000" 
-                      max="1000000" 
-                      step="10000"
+                      type="range" min="20000" max="1000000" step="10000"
                       value={monthlyRevenue}
                       onChange={(e) => setMonthlyRevenue(Number(e.target.value))}
                       className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-500"
@@ -473,9 +453,7 @@ const App = () => {
                       <span className="text-2xl font-black text-teal-400">{denialRate}%</span>
                     </div>
                     <input 
-                      type="range" 
-                      min="5" 
-                      max="35" 
+                      type="range" min="5" max="35" 
                       value={denialRate}
                       onChange={(e) => setDenialRate(Number(e.target.value))}
                       className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-500"
@@ -488,10 +466,7 @@ const App = () => {
                     <p className="text-xs text-teal-400 font-bold uppercase tracking-wider mb-1">Estimated Monthly Recovery</p>
                     <div className="text-4xl sm:text-5xl font-black text-white">${estimatedRecovery}</div>
                   </div>
-                  <button 
-                    onClick={() => handleScroll('contact')}
-                    className="bg-teal-500 text-slate-950 px-8 py-4 rounded-xl font-bold hover:bg-teal-400 transition-all shrink-0"
-                  >
+                  <button onClick={() => handleScroll('contact')} className="bg-teal-500 text-slate-950 px-8 py-4 rounded-xl font-bold hover:bg-teal-400 transition-all shrink-0">
                     Claim This Revenue
                   </button>
                 </div>
@@ -499,6 +474,7 @@ const App = () => {
             </div>
           </section>
 
+          {/* Contact Section */}
           <section id="contact" className="py-24 bg-slate-50 border-t border-slate-200">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="bg-white rounded-[2.5rem] p-10 lg:p-16 border border-slate-200 shadow-2xl relative overflow-hidden">
@@ -507,21 +483,21 @@ const App = () => {
                     <h2 className="text-5xl lg:text-6xl font-black text-slate-900 mb-4 leading-tight">
                       Claims<br/><span className="text-slate-900">Stuck?</span>
                     </h2>
-                    <p className="text-2xl text-teal-600 font-bold mb-8">MedyFlo clears the backlog.</p>
+                    <p className="text-2xl text-teal-600 font-bold mb-8">{SITE_CONFIG.brandName} clears the backlog.</p>
                     
                     <div className="space-y-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-teal-600 shadow-sm shrink-0"><Phone size={20} /></div>
                         <div>
                           <div className="text-xs text-slate-500 font-bold uppercase">Call Us Directly</div>
-                          <a href="tel:8005552847" className="text-lg font-bold text-slate-900 hover:text-teal-600 transition-colors">(800) 555-2847</a>
+                          <a href={`tel:${SITE_CONFIG.contact.phoneUri}`} className="text-lg font-bold text-slate-900 hover:text-teal-600 transition-colors">{SITE_CONFIG.contact.phoneDisplay}</a>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-teal-600 shadow-sm shrink-0"><Mail size={20} /></div>
                         <div>
                           <div className="text-xs text-slate-500 font-bold uppercase">Email Our Team</div>
-                          <a href="mailto:audit@medyflo.com" className="text-lg font-bold text-slate-900 hover:text-teal-600 transition-colors">audit@medyflo.com</a>
+                          <a href={`mailto:${SITE_CONFIG.contact.email}`} className="text-lg font-bold text-slate-900 hover:text-teal-600 transition-colors">{SITE_CONFIG.contact.email}</a>
                         </div>
                       </div>
                     </div>
@@ -530,9 +506,7 @@ const App = () => {
                   <div>
                     {formStatus === 'success' ? (
                       <div className="text-center py-12 bg-teal-50 rounded-3xl border border-teal-100">
-                        <div className="w-20 h-20 bg-white text-teal-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
-                          <CheckCircle2 size={40} />
-                        </div>
+                        <div className="w-20 h-20 bg-white text-teal-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm"><CheckCircle2 size={40} /></div>
                         <h3 className="text-2xl font-black text-slate-900 mb-2">Request Submitted!</h3>
                         <p className="text-slate-600 mb-8 px-4">Our RCM specialists will contact you shortly.</p>
                       </div>
@@ -557,11 +531,7 @@ const App = () => {
                           <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Practice Name</label>
                           <input required type="text" placeholder="Northside Medical Center" className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none text-white placeholder:text-slate-500" />
                         </div>
-                        <button 
-                          type="submit" 
-                          disabled={formStatus === 'submitting'}
-                          className="w-full bg-teal-500 text-slate-950 py-4 rounded-xl font-bold text-lg hover:bg-teal-400 transition-all shadow-lg active:scale-95 disabled:opacity-50 mt-4 flex items-center justify-center gap-2"
-                        >
+                        <button type="submit" disabled={formStatus === 'submitting'} className="w-full bg-teal-500 text-slate-950 py-4 rounded-xl font-bold text-lg hover:bg-teal-400 transition-all shadow-lg active:scale-95 disabled:opacity-50 mt-4 flex items-center justify-center gap-2">
                           {formStatus === 'submitting' ? 'Processing...' : 'Request Audit Now'} <ArrowRight size={20} />
                         </button>
                       </form>
@@ -572,8 +542,10 @@ const App = () => {
             </div>
           </section>
 
+          {/* FAQ Section */}
           <section id="faq" className="py-24 bg-white border-t border-slate-200">
-            <div className="max-w-3xl mx-auto px-4">
+             {/* Same content as previous version */}
+             <div className="max-w-3xl mx-auto px-4">
               <div className="text-center mb-16">
                 <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mt-2">Frequently Asked Questions</h2>
               </div>
@@ -601,6 +573,7 @@ const App = () => {
         </main>
       )}
 
+      {/* Footer */}
       <footer className="bg-slate-950 text-slate-400 py-12 border-t border-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-10">
@@ -609,29 +582,43 @@ const App = () => {
                 <Activity size={20} />
               </div>
               <div>
-                 <span className="text-xl font-bold text-white tracking-tight block">MedyFlo</span>
+                 <span className="text-xl font-bold text-white tracking-tight block">{SITE_CONFIG.brandName}</span>
                  <span className="text-[8px] font-bold tracking-widest text-slate-500 uppercase block">Medical Billing. Simplified.</span>
               </div>
             </div>
 
             <div className="flex flex-wrap justify-center gap-8 text-xs font-bold uppercase tracking-widest">
-              <button onClick={() => handleScroll('solutions')} className="hover:text-teal-400 transition-colors">Solutions</button>
-              <button onClick={() => handleScroll('services')} className="hover:text-teal-400 transition-colors">Services</button>
+              {SITE_CONFIG.navigation.slice(0, 3).map((nav, index) => (
+                <button key={index} onClick={() => handleScroll(nav.id)} className="hover:text-teal-400 transition-colors">{nav.label}</button>
+              ))}
               <button onClick={() => handleScroll('contact')} className="hover:text-teal-400 transition-colors">Contact</button>
             </div>
 
+            {/* Configured Social Icons */}
             <div className="flex items-center gap-4">
-              <a href="#" aria-label="Facebook" className="bg-slate-900 border border-slate-800 p-2.5 rounded-full text-slate-400 hover:bg-teal-600 hover:text-white transition-all">
+              <a 
+                href={SITE_CONFIG.socialLinks.facebook} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label="Facebook" 
+                className="bg-slate-900 border border-slate-800 p-2.5 rounded-full text-slate-400 hover:bg-teal-600 hover:text-white transition-all"
+              >
                 <Facebook size={18} />
               </a>
-              <a href="#" aria-label="Instagram" className="bg-slate-900 border border-slate-800 p-2.5 rounded-full text-slate-400 hover:bg-teal-600 hover:text-white transition-all">
+              <a 
+                href={SITE_CONFIG.socialLinks.instagram} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label="Instagram" 
+                className="bg-slate-900 border border-slate-800 p-2.5 rounded-full text-slate-400 hover:bg-teal-600 hover:text-white transition-all"
+              >
                 <Instagram size={18} />
               </a>
             </div>
           </div>
 
           <div className="flex flex-col md:flex-row justify-between items-center text-xs gap-4 pt-8 border-t border-slate-800">
-            <p>© {new Date().getFullYear()} MedyFlo Revenue Cycle Management. HIPAA Compliant.</p>
+            <p>© {new Date().getFullYear()} {SITE_CONFIG.brandName} Revenue Cycle Management. HIPAA Compliant.</p>
             <div className="flex gap-6 font-semibold">
               <button onClick={() => setCurrentView('terms')} className="hover:text-teal-400 transition-colors">Terms of Service</button>
               <button onClick={() => setCurrentView('privacy')} className="hover:text-teal-400 transition-colors">Privacy Policy</button>
