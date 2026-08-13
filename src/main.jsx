@@ -4,7 +4,8 @@ import {
   BarChart3, ShieldCheck, ClipboardCheck, TrendingUp, ChevronDown, 
   Phone, Mail, CheckCircle2, ArrowRight, Menu, X, CreditCard, Users, 
   Clock, Tag, AlertOctagon, UserMinus, Activity, DollarSign, FileText, 
-  Lock, Facebook, Instagram, Calculator, Award
+  Lock, Facebook, Instagram, Calculator, Award, Building2, Stethoscope, 
+  Layers, HelpCircle, FileSpreadsheet
 } from 'lucide-react';
 
 // ==========================================
@@ -13,7 +14,7 @@ import {
 const SITE_CONFIG = {
   brandName: "MedyFlo",
   brandTagline: "Focus On Care. We Handle Billing.",
-  logoPath: "/logo.png", // <-- PLACEHOLDER: Put image_10.png in the public folder as 'logo.png'
+  logoPath: "/logo.png",
   contact: {
     phoneDisplay: "(800) 555-2847",
     phoneUri: "8005552847",
@@ -21,7 +22,7 @@ const SITE_CONFIG = {
   },
   socialLinks: {
     facebook: "https://www.facebook.com/MedyFloRCM",
-    instagram: "https://www.instagram.com/medyflo/"
+    instagram: "https://www.instagram.com/medyflo/"
   },
   navigation: [
     { label: "Solutions", id: "solutions" },
@@ -30,7 +31,6 @@ const SITE_CONFIG = {
     { label: "FAQ", id: "faq" }
   ]
 };
-// ==========================================
 
 const App = () => {
   const [currentView, setCurrentView] = useState('home');
@@ -38,11 +38,24 @@ const App = () => {
   const [formStatus, setFormStatus] = useState('idle');
   const [activeFaq, setActiveFaq] = useState(null);
 
+  // Form State for Detailed Lead Capture
+  const [formData, setFormData] = useState({
+    fullName: '',
+    workEmail: '',
+    phone: '',
+    practiceName: '',
+    specialty: '',
+    primaryService: 'Full Revenue Cycle Management',
+    monthlyRevenue: '$100k - $250k',
+    ehrSystem: '',
+    notes: ''
+  });
+
   // ROI Calculator State
   const [monthlyRevenue, setMonthlyRevenue] = useState(150000);
   const [denialRate, setDenialRate] = useState(15);
   
-  // Accurate ROI Math
+  // ROI Math
   const lostRevenue = monthlyRevenue * (denialRate / 100);
   const recoveryRate = 0.65; 
   const estimatedRecovery = Math.round(lostRevenue * recoveryRate);
@@ -74,12 +87,16 @@ const App = () => {
     }
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setFormStatus('submitting');
     setTimeout(() => {
       setFormStatus('success');
-      e.target.reset();
     }, 1500);
   };
 
@@ -99,36 +116,36 @@ const App = () => {
     {
       icon: <DollarSign size={28} className="text-rose-500" />,
       title: "Denied Claims",
-      subtitle: "Revenue you earned, but don't get.",
-      solution: "We implement rigorous front-end scrubbing and aggressive back-end appeals to recover lost cash flow."
+      subtitle: "Revenue earned, but uncollected.",
+      solution: "Rigorous front-end scrubbing and aggressive back-end appeals to recover lost cash flow."
     },
     {
       icon: <Clock size={28} className="text-amber-500" />,
       title: "Slow Reimbursements",
-      subtitle: "Cash flow takes a major hit.",
-      solution: "Accelerate your payment cycles with clean first-time submissions and automated follow-up tracking."
+      subtitle: "Cash flow bottlenecks.",
+      solution: "Accelerate payment cycles with clean first-time submissions and automated tracking."
     },
     {
       icon: <AlertOctagon size={28} className="text-orange-500" />,
       title: "Coding Errors",
       subtitle: "Small mistakes lead to big losses.",
-      solution: "Certified medical coders ensure every encounter is precisely documented right the first time."
+      solution: "Certified coders ensure every encounter is accurately coded and documented."
     },
     {
       icon: <Users size={28} className="text-teal-600" />,
       title: "Endless Admin Time",
-      subtitle: "Too much paperwork, too little care.",
-      solution: "We handle the endless insurance phone trees so your staff can focus completely on patient care."
+      subtitle: "Heavy paperwork burden.",
+      solution: "We handle insurer phone calls and paperwork so your team focuses on patients."
     }
   ];
 
   const icebergPoints = [
-    { icon: <DollarSign size={22} className="text-teal-400" />, title: "Underpayments", desc: "Contracts not honored by payers, silently draining profits." },
+    { icon: <DollarSign size={22} className="text-teal-400" />, title: "Underpayments", desc: "Contracts not honored by payers, silently draining practice profits." },
     { icon: <FileText size={22} className="text-teal-400" />, title: "Coding Mismatches", desc: "Incorrect modifiers and ICD-10 codes triggering instant denials." },
-    { icon: <Users size={22} className="text-teal-400" />, title: "Eligibility Issues", desc: "Out-of-date patient insurance status checked too late." },
-    { icon: <Clock size={22} className="text-teal-400" />, title: "AR Aging", desc: "Claims lingering past 60, 90, and 120 days unworked." },
+    { icon: <Users size={22} className="text-teal-400" />, title: "Eligibility Issues", desc: "Out-of-date patient insurance status verified too late." },
+    { icon: <Clock size={22} className="text-teal-400" />, title: "AR Aging", desc: "Claims lingering past 60, 90, and 120 days unworked in queues." },
     { icon: <Phone size={22} className="text-teal-400" />, title: "Missed Follow-ups", desc: "Unanswered insurer requests completely dropped by busy staff." },
-    { icon: <BarChart3 size={22} className="text-teal-400" />, title: "Lost Margins", desc: "Cumulative revenue leakage threatening practice stability." }
+    { icon: <BarChart3 size={22} className="text-teal-400" />, title: "Lost Margins", desc: "Cumulative revenue leakage threatening long-term practice growth." }
   ];
 
   const coreServices = [
@@ -183,35 +200,34 @@ const App = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-teal-200 selection:text-teal-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-teal-200 selection:text-teal-900 overflow-x-hidden">
       
       {/* 🟢 HEADER */}
       <header className="fixed w-full z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
             
-            {/* Logo Area */}
+            {/* Logo */}
             <div className="flex items-center gap-3 cursor-pointer group" onClick={() => { setCurrentView('home'); window.scrollTo({top: 0, behavior: 'smooth'}); }}>
               <img 
                 src={SITE_CONFIG.logoPath} 
                 alt={`${SITE_CONFIG.brandName} Logo`} 
-                className="w-12 h-12 rounded-full shadow-md group-hover:scale-105 transition-transform duration-300 object-cover bg-white"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-md group-hover:scale-105 transition-transform duration-300 object-cover bg-white"
                 onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
               />
-              {/* Fallback icon if logo image is missing */}
-              <div style={{display: 'none'}} className="w-11 h-11 bg-slate-900 rounded-full items-center justify-center text-teal-400 shadow-md group-hover:scale-105 transition-transform duration-300">
-                <Activity size={24} strokeWidth={2.5} />
+              <div style={{display: 'none'}} className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-900 rounded-full items-center justify-center text-teal-400 shadow-md group-hover:scale-105 transition-transform duration-300">
+                <Activity size={22} strokeWidth={2.5} />
               </div>
 
               <div>
-                <div className="text-2xl font-extrabold tracking-tight text-slate-900 flex items-center">
+                <div className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 flex items-center">
                   {SITE_CONFIG.brandName.substring(0, 4)}<span className="text-teal-600">{SITE_CONFIG.brandName.substring(4)}</span>
                 </div>
-                <div className="text-[9px] font-bold text-slate-400 tracking-wider uppercase">{SITE_CONFIG.brandTagline}</div>
+                <div className="text-[8px] sm:text-[9px] font-bold text-slate-400 tracking-wider uppercase">{SITE_CONFIG.brandTagline}</div>
               </div>
             </div>
             
-            <nav className="hidden md:flex items-center gap-8">
+            <nav className="hidden md:flex items-center gap-6 lg:gap-8">
               {currentView === 'home' && SITE_CONFIG.navigation.map((nav, index) => (
                 <button 
                   key={index} 
@@ -226,7 +242,7 @@ const App = () => {
               )}
               <button 
                 onClick={() => handleScroll('contact')}
-                className="bg-teal-600 text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-teal-700 transition-all shadow-lg shadow-teal-600/20 active:scale-95"
+                className="bg-teal-600 text-white px-5 py-2.5 rounded-full font-bold text-sm hover:bg-teal-700 transition-all shadow-lg shadow-teal-600/20 active:scale-95"
               >
                 Get 50% Off Audit
               </button>
@@ -235,30 +251,30 @@ const App = () => {
             <button 
               className="md:hidden p-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500 rounded-lg" 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-label="Toggle Menu"
+              aria-label="Toggle Navigation Menu"
             >
               {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Navigation Drawer */}
         {isMenuOpen && (
-          <nav className="md:hidden bg-white border-b border-slate-200 absolute w-full shadow-2xl py-6 flex flex-col items-center gap-6 animate-in slide-in-from-top duration-200">
+          <nav className="md:hidden bg-white border-b border-slate-200 absolute top-20 left-0 w-full shadow-2xl py-6 px-6 flex flex-col items-center gap-5 animate-in slide-in-from-top duration-200 z-50">
             {currentView === 'home' ? SITE_CONFIG.navigation.map((nav, index) => (
               <button 
                 key={index} 
                 onClick={() => handleScroll(nav.id)} 
-                className="font-black text-slate-800 text-xl hover:text-teal-600"
+                className="font-bold text-slate-800 text-lg hover:text-teal-600 w-full py-2 border-b border-slate-100 text-center"
               >
                 {nav.label}
               </button>
             )) : (
-              <button onClick={() => { setCurrentView('home'); setIsMenuOpen(false); }} className="font-black text-slate-800 text-xl hover:text-teal-600">Back to Home</button>
+              <button onClick={() => { setCurrentView('home'); setIsMenuOpen(false); }} className="font-bold text-slate-800 text-lg hover:text-teal-600 w-full py-2 text-center">Back to Home</button>
             )}
             <button 
               onClick={() => handleScroll('contact')}
-              className="bg-teal-600 text-white px-8 py-3.5 rounded-full font-bold text-lg shadow-lg shadow-teal-600/20 mt-4 w-11/12 max-w-sm"
+              className="bg-teal-600 text-white px-6 py-3.5 rounded-full font-bold text-base shadow-lg shadow-teal-600/20 w-full mt-2"
             >
               Schedule Audit Now
             </button>
@@ -266,48 +282,74 @@ const App = () => {
         )}
       </header>
 
-      {/* 🟢 PAGES (Terms/Privacy) */}
+      {/* 🟢 LEGAL PAGES (Terms / Privacy Policy) */}
       {currentView === 'terms' || currentView === 'privacy' ? (
-        <main className="pt-32 pb-24 max-w-4xl mx-auto px-4 sm:px-6 min-h-screen flex flex-col justify-center">
-          <div className="bg-white rounded-[2rem] p-8 sm:p-14 shadow-2xl border border-slate-200">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-50 text-teal-700 text-xs font-bold uppercase tracking-wider mb-6">
+        <main className="pt-28 sm:pt-36 pb-20 max-w-4xl mx-auto px-4 sm:px-6 min-h-screen">
+          <div className="bg-white rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-12 lg:p-16 shadow-xl border border-slate-200">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-50 text-teal-700 text-xs font-bold uppercase tracking-wider mb-6">
               {currentView === 'terms' ? <FileText size={16} /> : <Lock size={16} />}
-              {currentView === 'terms' ? "Legal Documentation" : "Data Security & Trust"}
+              {currentView === 'terms' ? "Legal Documentation" : "HIPAA & Data Privacy"}
             </div>
-            <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-6 tracking-tight">
-              {currentView === 'terms' ? "Terms of Service" : "Privacy Policy"}
-            </h1>
-            <p className="text-slate-500 font-medium mb-10 pb-6 border-b border-slate-100">Last updated: August 2026</p>
             
-            <div className="space-y-8 text-slate-600 leading-relaxed text-base sm:text-lg">
+            <h1 className="text-3xl sm:text-5xl font-black text-slate-900 mb-4 tracking-tight">
+              {currentView === 'terms' ? "Terms of Service" : "Privacy Policy & Security"}
+            </h1>
+            <p className="text-slate-500 font-medium text-sm sm:text-base mb-8 pb-6 border-b border-slate-100">Effective Date: August 2026 | Industry Standard Compliance Notice</p>
+            
+            <div className="space-y-8 text-slate-600 leading-relaxed text-sm sm:text-base">
               {currentView === 'terms' ? (
                 <>
-                  <div>
-                    <h3 className="text-xl font-bold text-slate-900 mb-2">1. Acceptance of Terms</h3>
-                    <p>By accessing or using the {SITE_CONFIG.brandName} website and RCM services, you agree to comply with and be bound by these Terms of Service.</p>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-slate-900 mb-2">2. Medical Billing & RCM Services</h3>
-                    <p>{SITE_CONFIG.brandName} provides claims submission, insurance verification, accounts receivable management, and revenue optimization consulting.</p>
-                  </div>
+                  <section>
+                    <h2 className="text-xl font-bold text-slate-900 mb-2">1. Agreement to Terms</h2>
+                    <p>By accessing or utilizing the {SITE_CONFIG.brandName} platform, ROI calculators, or submitting forms, you agree to be bound by these Terms of Service. If you are entering into this agreement on behalf of a medical practice or healthcare entity, you warrant that you have full legal authority to bind such entity.</p>
+                  </section>
+
+                  <section>
+                    <h2 className="text-xl font-bold text-slate-900 mb-2">2. Scope of RCM & Billing Services</h2>
+                    <p>{SITE_CONFIG.brandName} provides Revenue Cycle Management (RCM), claims scrubbing, electronic billing, payment posting, denial management, and credentialing support. Specific scope of work, fee structures, and KPIs are defined under executed Master Services Agreements (MSA) or Business Associate Agreements (BAA).</p>
+                  </section>
+
+                  <section>
+                    <h2 className="text-xl font-bold text-slate-900 mb-2">3. ROI Calculator & Financial Disclaimer</h2>
+                    <p>Calculations, projected recoveries, and metrics generated by the interactive ROI Calculator on this site are provided strictly for educational and estimation purposes. They do not constitute guaranteed financial outcomes. Actual reimbursement increases depend on practice specialty, payer mix, historical AR aging, and timely client documentation.</p>
+                  </section>
+
+                  <section>
+                    <h2 className="text-xl font-bold text-slate-900 mb-2">4. Limitation of Liability</h2>
+                    <p>To the maximum extent permitted by applicable law, {SITE_CONFIG.brandName} shall not be liable for indirect, incidental, or consequential damages resulting from website downtime, user input errors, or third-party insurer processing delays.</p>
+                  </section>
                 </>
               ) : (
                 <>
-                  <div>
-                    <h3 className="text-xl font-bold text-slate-900 mb-2">1. Information We Collect</h3>
-                    <p>We collect practice details, professional email addresses, phone numbers, and optional revenue metrics provided via our audit questionnaires.</p>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-slate-900 mb-2">2. Data Usage & HIPAA</h3>
-                    <p>Your information is used strictly to provide consultation reports and fulfill contractual billing agreements in full accordance with HIPAA regulations.</p>
-                  </div>
+                  <section>
+                    <h2 className="text-xl font-bold text-slate-900 mb-2">1. Information Collection & Protected Health Information (PHI)</h2>
+                    <p>{SITE_CONFIG.brandName} collects corporate intake details, provider contact information, and practice metrics submitted via our contact forms. As a healthcare billing and revenue management provider, all Protected Health Information (PHI) processed on behalf of clients is managed in strict adherence to HIPAA, HITECH, and Omnibus regulations.</p>
+                  </section>
+
+                  <section>
+                    <h2 className="text-xl font-bold text-slate-900 mb-2">2. Business Associate Agreements (BAA)</h2>
+                    <p>Before receiving or processing any identifiable patient claims data, {SITE_CONFIG.brandName} executes formal Business Associate Agreements (BAAs) with covered entities to ensure compliant end-to-end data protection.</p>
+                  </section>
+
+                  <section>
+                    <h2 className="text-xl font-bold text-slate-900 mb-2">3. Data Security & Storage Standard</h2>
+                    <p>We employ enterprise-grade 256-bit AES encryption for stored data and TLS 1.3 encryption for data in transit. Access control permissions are governed by role-based authorization and multi-factor authentication (MFA).</p>
+                  </section>
+
+                  <section>
+                    <h2 className="text-xl font-bold text-slate-900 mb-2">4. Zero Data Sale Policy</h2>
+                    <p>We strictly do not sell, rent, or trade provider contact details or practice data to third-party advertisers or data brokers under any circumstances.</p>
+                  </section>
                 </>
               )}
             </div>
 
-            <div className="mt-14 pt-8 border-t border-slate-100">
-              <button onClick={() => setCurrentView('home')} className="bg-slate-900 text-white px-8 py-3.5 rounded-xl font-bold hover:bg-teal-600 transition-colors shadow-lg flex items-center gap-2">
-                <ArrowRight className="rotate-180" size={18} /> Return to Home
+            <div className="mt-12 pt-8 border-t border-slate-100">
+              <button 
+                onClick={() => setCurrentView('home')} 
+                className="bg-slate-900 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-teal-600 transition-colors shadow-lg inline-flex items-center gap-2 text-sm"
+              >
+                <ArrowRight className="rotate-180" size={18} /> Return to Main Page
               </button>
             </div>
           </div>
@@ -315,81 +357,98 @@ const App = () => {
       ) : (
         <main>
           {/* 🟢 HERO SECTION */}
-          <section className="relative pt-36 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-white border-b border-slate-200">
+          <section className="relative pt-32 pb-16 sm:pt-40 lg:pt-48 lg:pb-28 bg-white border-b border-slate-200">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-              <div className="grid lg:grid-cols-2 gap-16 items-center">
-                <div className="relative z-10">
-                  <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter leading-[1.05] mb-6 text-slate-900">
+              <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                
+                <div>
+                  <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.08] mb-6 text-slate-900">
                     Focus on <br />
                     <span className="text-slate-900">Patients.</span><br />
                     <span className="text-teal-600">We’ll Handle</span><br />
                     <span className="text-teal-600 underline decoration-teal-200 underline-offset-8">the Billing.</span>
                   </h1>
                   
-                  <p className="text-lg sm:text-xl text-slate-600 mb-10 max-w-lg leading-relaxed font-medium">
-                    Stop letting denied claims drain your margins. Accurate coding, relentless follow-ups, and faster payments.
+                  <p className="text-base sm:text-xl text-slate-600 mb-8 sm:mb-10 max-w-lg font-medium leading-relaxed">
+                    Stop letting denied claims drain your margins. Accurate coding, relentless follow-ups, and faster reimbursements.
                   </p>
 
                   <div className="flex flex-col sm:flex-row gap-4 mb-10">
-                    <button onClick={() => handleScroll('contact')} className="bg-teal-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-teal-700 transition-all shadow-xl shadow-teal-600/20 active:scale-95 flex items-center justify-center gap-2">
+                    <button 
+                      onClick={() => handleScroll('contact')} 
+                      className="bg-teal-600 text-white px-8 py-4 rounded-xl font-bold text-base sm:text-lg hover:bg-teal-700 transition-all shadow-xl shadow-teal-600/20 active:scale-95 flex items-center justify-center gap-2"
+                    >
                       Get Started Today <ArrowRight size={20} />
                     </button>
-                    <button onClick={() => handleScroll('calculator')} className="bg-white border-2 border-slate-200 text-slate-900 px-8 py-4 rounded-xl font-bold text-lg hover:border-teal-600 hover:text-teal-600 transition-all active:scale-95 flex items-center justify-center gap-2">
+                    <button 
+                      onClick={() => handleScroll('calculator')} 
+                      className="bg-white border-2 border-slate-200 text-slate-900 px-8 py-4 rounded-xl font-bold text-base sm:text-lg hover:border-teal-600 hover:text-teal-600 transition-all active:scale-95 flex items-center justify-center gap-2"
+                    >
                       <Calculator size={20} /> Calculate ROI
                     </button>
                   </div>
                 </div>
 
-                <div className="relative z-10">
-                  <div className="bg-slate-900 rounded-[2.5rem] p-8 lg:p-10 shadow-2xl shadow-slate-900/20 relative overflow-hidden text-white">
-                     <div className="absolute top-1/2 -translate-y-12 right-0 opacity-10 pointer-events-none">
-                        <Activity size={300} className="text-teal-400" />
-                     </div>
-                    <h3 className="text-2xl font-black mb-8 flex items-center gap-3">
-                      <ShieldCheck className="text-teal-400" size={32} /> RCM Excellence
+                <div className="relative">
+                  <div className="bg-slate-900 rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-10 shadow-2xl shadow-slate-900/20 relative overflow-hidden text-white border border-slate-800">
+                    <div className="absolute top-1/2 -translate-y-1/2 right-0 opacity-10 pointer-events-none">
+                      <Activity size={280} className="text-teal-400" />
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-black mb-6 sm:mb-8 flex items-center gap-3">
+                      <ShieldCheck className="text-teal-400 shrink-0" size={32} /> RCM Excellence
                     </h3>
-                    <div className="space-y-5">
-                      {["End-to-end Claims Submission", "Real-time Insurance Verification", "Accurate Payment Posting", "Aggressive Denial Management"].map((item, i) => (
-                        <div key={i} className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
-                          <div className="w-8 h-8 rounded-full bg-teal-500/20 flex items-center justify-center text-teal-400 shadow-sm shrink-0">
-                            <CheckCircle2 size={18} />
+                    <div className="space-y-4 sm:space-y-5 relative z-10">
+                      {[
+                        "End-to-end Claims Submission", 
+                        "Real-time Insurance Verification", 
+                        "Accurate Payment Posting", 
+                        "Aggressive Denial Management"
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center gap-3 sm:gap-4 bg-white/5 p-3.5 sm:p-4 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
+                          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-teal-500/20 flex items-center justify-center text-teal-400 shrink-0">
+                            <CheckCircle2 size={16} />
                           </div>
-                          <span className="font-bold text-slate-200">{item}</span>
+                          <span className="font-bold text-slate-200 text-sm sm:text-base">{item}</span>
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
+
               </div>
             </div>
           </section>
 
           {/* 🟢 SOLUTIONS SECTION */}
-          <section id="solutions" className="py-24 lg:py-32 bg-slate-50 relative border-b border-slate-200">
+          <section id="solutions" className="py-20 lg:py-28 bg-slate-50 relative border-b border-slate-200">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="text-center mb-16 lg:mb-24">
-                <h2 className="text-4xl sm:text-5xl font-black text-slate-900 mb-4 tracking-tight">Pain in Medical Billing?</h2>
-                <p className="text-xl text-teal-600 font-bold">You focus on health — we fix the wealth.</p>
+              <div className="text-center mb-12 sm:mb-20">
+                <h2 className="text-3xl sm:text-5xl font-black text-slate-900 mb-3 tracking-tight">Pain in Medical Billing?</h2>
+                <p className="text-lg sm:text-xl text-teal-600 font-bold">You focus on health — we fix the wealth.</p>
               </div>
-              <div className="grid lg:grid-cols-12 gap-12 items-center">
-                <div className="lg:col-span-5 bg-white p-10 lg:p-12 rounded-[2.5rem] border border-slate-200 shadow-xl flex flex-col items-center text-center">
-                  <div className="w-24 h-24 bg-rose-50 rounded-full flex items-center justify-center text-rose-500 mb-8 border border-rose-100">
-                    <UserMinus size={40} />
+
+              <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                <div className="lg:col-span-5 bg-white p-8 sm:p-12 rounded-3xl sm:rounded-[2.5rem] border border-slate-200 shadow-xl flex flex-col items-center text-center">
+                  <div className="w-20 h-20 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-500 mb-6 border border-rose-100">
+                    <UserMinus size={36} />
                   </div>
-                  <h3 className="text-3xl font-black text-slate-900 mb-6 leading-tight">Less Time Admin.<br/>Less Stress.<br/><span className="text-teal-600">More Revenue.</span></h3>
-                  <p className="text-slate-600 leading-relaxed font-medium bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                    We completely take over the billing burden so your practice can breathe again. Let's remove the friction together.
+                  <h3 className="text-2xl sm:text-3xl font-black text-slate-900 mb-4 leading-tight">
+                    Less Admin Time.<br/>Less Stress.<br/><span className="text-teal-600">More Revenue.</span>
+                  </h3>
+                  <p className="text-slate-600 leading-relaxed font-medium bg-slate-50 p-5 sm:p-6 rounded-2xl border border-slate-100 text-sm sm:text-base">
+                    We completely take over billing burdens so your practice can breathe again. Let's eliminate friction together.
                   </p>
                 </div>
-                <div className="lg:col-span-7 grid sm:grid-cols-2 gap-6">
+
+                <div className="lg:col-span-7 grid sm:grid-cols-2 gap-5 sm:gap-6">
                   {painPoints.map((point, idx) => (
-                    <div key={idx} className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                      <div className="bg-slate-50 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 border border-slate-100">
+                    <div key={idx} className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                      <div className="bg-slate-50 w-14 h-14 rounded-2xl flex items-center justify-center mb-5 border border-slate-100">
                         {point.icon}
                       </div>
-                      <h4 className="text-xl font-black text-slate-900 mb-2">{point.title}</h4>
-                      <p className="text-sm font-bold text-slate-500 mb-3">{point.subtitle}</p>
-                      <p className="text-slate-600 leading-relaxed font-medium text-sm">{point.solution}</p>
+                      <h4 className="text-lg sm:text-xl font-black text-slate-900 mb-1">{point.title}</h4>
+                      <p className="text-xs sm:text-sm font-bold text-slate-500 mb-3">{point.subtitle}</p>
+                      <p className="text-slate-600 leading-relaxed font-medium text-xs sm:text-sm">{point.solution}</p>
                     </div>
                   ))}
                 </div>
@@ -398,26 +457,26 @@ const App = () => {
           </section>
 
           {/* 🟢 THE PROBLEM SECTION (Dark Mode) */}
-          <section className="py-24 lg:py-32 bg-slate-950 text-white relative overflow-hidden">
-             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-              <div className="text-center max-w-3xl mx-auto mb-20">
-                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
+          <section className="py-20 lg:py-28 bg-slate-950 text-white relative overflow-hidden">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+              <div className="text-center max-w-3xl mx-auto mb-16">
+                <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black mb-4 tracking-tight">
                   The leakage is worse <br/><span className="text-teal-400">than it looks.</span>
                 </h2>
-                <div className="w-24 h-1.5 bg-teal-500 mx-auto mb-8 rounded-full"></div>
-                <p className="text-slate-400 text-lg sm:text-xl font-medium">Denied claims are just the visible peak. Hidden revenue leaks lurk completely beneath the surface.</p>
+                <div className="w-20 h-1.5 bg-teal-500 mx-auto mb-6 rounded-full"></div>
+                <p className="text-slate-400 text-base sm:text-xl font-medium">Denied claims are just the tip. Hidden revenue leaks lurk completely beneath the surface.</p>
               </div>
 
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {icebergPoints.map((item, idx) => (
-                  <div key={idx} className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-3xl p-8 hover:bg-slate-800 hover:border-teal-500/50 transition-all duration-300 group">
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="w-12 h-12 bg-slate-800 rounded-xl flex items-center justify-center border border-slate-700 group-hover:bg-teal-500/20 group-hover:border-teal-500/50 transition-colors">
+                  <div key={idx} className="bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-2xl sm:rounded-3xl p-6 sm:p-8 hover:bg-slate-800 hover:border-teal-500/50 transition-all duration-300 group">
+                    <div className="flex items-center gap-4 mb-3">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-800 rounded-xl flex items-center justify-center border border-slate-700 group-hover:bg-teal-500/20 group-hover:border-teal-500/50 transition-colors shrink-0">
                         {item.icon}
                       </div>
-                      <h3 className="text-xl font-bold text-white">{item.title}</h3>
+                      <h3 className="text-lg sm:text-xl font-bold text-white">{item.title}</h3>
                     </div>
-                    <p className="text-slate-400 font-medium leading-relaxed">{item.desc}</p>
+                    <p className="text-slate-400 font-medium leading-relaxed text-xs sm:text-sm">{item.desc}</p>
                   </div>
                 ))}
               </div>
@@ -425,28 +484,27 @@ const App = () => {
           </section>
 
           {/* 🟢 SERVICES SECTION */}
-          <section id="services" className="py-24 lg:py-32 bg-white border-b border-slate-200">
-             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="text-center mb-20">
-                <h2 className="text-4xl sm:text-5xl font-black text-slate-900 mb-6 tracking-tight">
+          <section id="services" className="py-20 lg:py-28 bg-white border-b border-slate-200">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-16">
+                <h2 className="text-3xl sm:text-5xl font-black text-slate-900 mb-4 tracking-tight">
                   Medical Billing, <span className="text-teal-600 underline decoration-teal-200 underline-offset-8">Done Right.</span>
                 </h2>
-                <p className="text-xl text-slate-600 font-bold">Accuracy meets aggression in revenue recovery.</p>
+                <p className="text-lg sm:text-xl text-slate-600 font-bold">Accuracy meets aggression in revenue recovery.</p>
               </div>
               
-              {/* Using auto-fit style grid layout to handle 5 items elegantly */}
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                 {coreServices.map((service, idx) => (
-                  <div key={idx} className="bg-slate-50 p-8 rounded-[2rem] border border-slate-200 hover:shadow-2xl hover:border-teal-400 hover:-translate-y-2 transition-all duration-300 group flex flex-col justify-between cursor-default">
+                  <div key={idx} className="bg-slate-50 p-6 sm:p-8 rounded-3xl border border-slate-200 hover:shadow-xl hover:border-teal-400 hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between">
                     <div>
-                      <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-teal-600 shadow-sm mb-8 group-hover:bg-teal-600 group-hover:text-white transition-colors duration-300 border border-slate-100">
-                        {React.cloneElement(service.icon, { size: 32 })}
+                      <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-teal-600 shadow-sm mb-6 group-hover:bg-teal-600 group-hover:text-white transition-colors duration-300 border border-slate-100 shrink-0">
+                        {React.cloneElement(service.icon, { size: 28 })}
                       </div>
-                      <h3 className="text-2xl font-black text-slate-900 mb-6">{service.title}</h3>
-                      <ul className="space-y-4">
+                      <h3 className="text-xl sm:text-2xl font-black text-slate-900 mb-4">{service.title}</h3>
+                      <ul className="space-y-3">
                         {service.items.map((item, i) => (
-                          <li key={i} className="flex items-start gap-3 text-slate-700 font-medium">
-                            <div className="w-2 h-2 rounded-full bg-teal-500 mt-2 shrink-0" />
+                          <li key={i} className="flex items-start gap-3 text-slate-700 font-medium text-xs sm:text-sm">
+                            <div className="w-2 h-2 rounded-full bg-teal-500 mt-1.5 shrink-0" />
                             <span>{item}</span>
                           </li>
                         ))}
@@ -458,34 +516,31 @@ const App = () => {
             </div>
           </section>
 
-          {/* 🟢 ACCURATE ROI CALCULATOR */}
-          <section id="calculator" className="py-24 lg:py-32 bg-teal-950 text-white relative overflow-hidden">
-            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-teal-400 via-transparent to-transparent"></div>
-            
+          {/* 🟢 FIXED ROI CALCULATOR SECTION */}
+          <section id="calculator" className="py-20 lg:py-28 bg-teal-950 text-white relative overflow-hidden">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 relative z-10">
-              <div className="text-center mb-16">
-                <h2 className="text-4xl sm:text-5xl font-black mb-4 tracking-tight">Calculate Your <span className="text-teal-400">Revenue Potential</span></h2>
-                <p className="text-teal-100/80 text-lg sm:text-xl font-medium max-w-2xl mx-auto">Discover how much leaked revenue {SITE_CONFIG.brandName} can recover for your practice every single month based on industry-standard 65% recovery metrics.</p>
+              <div className="text-center mb-12 sm:mb-16">
+                <h2 className="text-3xl sm:text-5xl font-black mb-4 tracking-tight">Calculate Your <span className="text-teal-400">Revenue Potential</span></h2>
+                <p className="text-teal-100/80 text-base sm:text-lg font-medium max-w-2xl mx-auto">Discover how much leaked revenue {SITE_CONFIG.brandName} can recover for your practice every single month.</p>
               </div>
 
-              <div className="bg-slate-900 border border-teal-500/30 rounded-[2.5rem] shadow-2xl p-8 sm:p-12 lg:p-16">
+              <div className="bg-slate-900 border border-teal-500/30 rounded-3xl sm:rounded-[2.5rem] shadow-2xl p-6 sm:p-10 lg:p-14">
                 
-                <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
                   
                   {/* Inputs */}
-                  <div className="space-y-10">
-                    
+                  <div className="space-y-8">
                     {/* Revenue Input */}
                     <div>
-                      <div className="flex justify-between items-end mb-4">
-                        <label className="text-sm font-bold text-slate-300 uppercase tracking-wide">Monthly Gross Revenue</label>
+                      <div className="flex justify-between items-center mb-3">
+                        <label className="text-xs sm:text-sm font-bold text-slate-300 uppercase tracking-wide">Monthly Gross Revenue</label>
                         <div className="relative">
                           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-teal-400 font-bold">$</span>
                           <input 
                             type="text" 
                             value={monthlyRevenue.toLocaleString()} 
                             onChange={handleRevenueChange}
-                            className="bg-slate-800 border-2 border-slate-700 focus:border-teal-400 focus:ring-0 rounded-xl py-2 pl-7 pr-4 w-32 text-right font-black text-white outline-none transition-colors"
+                            className="bg-slate-800 border border-slate-700 focus:border-teal-400 focus:ring-0 rounded-xl py-1.5 pl-7 pr-3 w-32 text-right font-black text-white text-sm outline-none transition-colors"
                           />
                         </div>
                       </div>
@@ -493,24 +548,24 @@ const App = () => {
                         type="range" min="10000" max="1000000" step="5000"
                         value={monthlyRevenue}
                         onChange={(e) => setMonthlyRevenue(Number(e.target.value))}
-                        className="w-full h-3 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-500"
+                        className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-500"
                       />
-                      <div className="flex justify-between mt-2 text-xs font-bold text-slate-500">
-                        <span>$10k</span>
-                        <span>$1M+</span>
+                      <div className="flex justify-between mt-2 text-[10px] sm:text-xs font-bold text-slate-500">
+                        <span>$10,000</span>
+                        <span>$1,000,000+</span>
                       </div>
                     </div>
 
                     {/* Denial Rate Input */}
                     <div>
-                      <div className="flex justify-between items-end mb-4">
-                        <label className="text-sm font-bold text-slate-300 uppercase tracking-wide">Current Denial / Leakage Rate</label>
+                      <div className="flex justify-between items-center mb-3">
+                        <label className="text-xs sm:text-sm font-bold text-slate-300 uppercase tracking-wide">Current Denial Rate</label>
                         <div className="relative">
                           <input 
                             type="number" 
                             value={denialRate} 
                             onChange={handleDenialChange}
-                            className="bg-slate-800 border-2 border-slate-700 focus:border-teal-400 focus:ring-0 rounded-xl py-2 pr-7 pl-4 w-24 text-right font-black text-white outline-none transition-colors"
+                            className="bg-slate-800 border border-slate-700 focus:border-teal-400 focus:ring-0 rounded-xl py-1.5 pr-7 pl-3 w-24 text-right font-black text-white text-sm outline-none transition-colors"
                           />
                           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-teal-400 font-bold">%</span>
                         </div>
@@ -519,136 +574,269 @@ const App = () => {
                         type="range" min="5" max="40" step="1"
                         value={denialRate}
                         onChange={(e) => setDenialRate(Number(e.target.value))}
-                        className="w-full h-3 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-500"
+                        className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-500"
                       />
-                      <div className="flex justify-between mt-2 text-xs font-bold text-slate-500">
-                        <span>5% (Excellent)</span>
-                        <span>40% (Critical)</span>
+                      <div className="flex justify-between mt-2 text-[10px] sm:text-xs font-bold text-slate-500">
+                        <span>5% (Industry Low)</span>
+                        <span>40% (Critical Leakage)</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Results Card */}
-                  <div className="bg-teal-500/10 border-2 border-teal-500/50 rounded-3xl p-8 lg:p-10 text-center relative overflow-hidden">
-                    <div className="absolute -right-4 -top-4 bg-teal-500 text-slate-900 text-[10px] font-black px-6 py-1 uppercase tracking-widest rotate-12 shadow-lg">Estimated</div>
+                  {/* Results Card - FIX: Badge placed cleanly inside to prevent truncation */}
+                  <div className="bg-teal-500/10 border-2 border-teal-500/40 rounded-3xl p-6 sm:p-8 text-center relative flex flex-col items-center">
                     
-                    <p className="text-sm text-teal-300 font-bold uppercase tracking-widest mb-2">Estimated Monthly Recovery</p>
-                    <div className="text-5xl lg:text-6xl font-black text-white mb-6 drop-shadow-md">
+                    {/* Fixed Badge (In-flow pill badge, non-clipping) */}
+                    <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-teal-500 text-slate-950 text-xs font-black uppercase tracking-wider mb-4 shadow-md">
+                      <Tag size={12} /> Estimated Monthly Recovery
+                    </div>
+                    
+                    <div className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6 tracking-tight">
                       ${estimatedRecovery.toLocaleString()}
                     </div>
                     
-                    <div className="bg-slate-900/50 rounded-xl p-4 mb-8 text-left border border-slate-700/50">
-                      <div className="flex justify-between text-sm mb-2">
-                        <span className="text-slate-400">Total Lost Revenue:</span>
+                    <div className="w-full bg-slate-900/80 rounded-2xl p-4 mb-6 text-left border border-slate-700/60 space-y-2">
+                      <div className="flex justify-between text-xs sm:text-sm">
+                        <span className="text-slate-400">Total Monthly Lost:</span>
                         <span className="font-bold text-rose-400">${Math.round(lostRevenue).toLocaleString()}</span>
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-slate-400">Our Target Recovery (65%):</span>
-                        <span className="font-bold text-teal-400">+${estimatedRecovery.toLocaleString()}</span>
+                      <div className="flex justify-between text-xs sm:text-sm pt-2 border-t border-slate-800">
+                        <span className="text-slate-400">MedyFlo Target (65%):</span>
+                        <span className="font-bold text-teal-400">+${estimatedRecovery.toLocaleString()} / mo</span>
                       </div>
                     </div>
 
-                    <button onClick={() => handleScroll('contact')} className="w-full bg-teal-500 text-slate-950 py-4 rounded-xl font-black text-lg hover:bg-teal-400 hover:-translate-y-1 transition-all shadow-xl shadow-teal-500/20 active:scale-95 flex justify-center items-center gap-2">
-                      Claim This Revenue <ArrowRight size={20} />
+                    <button 
+                      onClick={() => handleScroll('contact')} 
+                      className="w-full bg-teal-500 text-slate-950 py-3.5 sm:py-4 rounded-xl font-black text-base hover:bg-teal-400 transition-all shadow-lg active:scale-95 flex justify-center items-center gap-2"
+                    >
+                      Claim This Revenue <ArrowRight size={18} />
                     </button>
                   </div>
+
                 </div>
 
               </div>
             </div>
           </section>
 
-          {/* 🟢 CONTACT SECTION */}
-          <section id="contact" className="py-24 lg:py-32 bg-slate-50">
+          {/* 🟢 ENHANCED GET STARTED TODAY / CONTACT SECTION */}
+          <section id="contact" className="py-20 lg:py-28 bg-slate-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="bg-white rounded-[3rem] p-8 sm:p-12 lg:p-16 border border-slate-200 shadow-2xl relative overflow-hidden">
-                <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-                  <div>
-                    <h2 className="text-5xl lg:text-6xl font-black text-slate-900 mb-6 leading-[1.1] tracking-tight">
-                      Claims<br/><span className="text-teal-600">Stuck?</span>
-                    </h2>
-                    <p className="text-xl text-slate-600 font-bold mb-10">{SITE_CONFIG.brandName} aggressively clears the backlog.</p>
+              <div className="bg-white rounded-3xl sm:rounded-[3rem] p-6 sm:p-10 lg:p-14 border border-slate-200 shadow-2xl">
+                <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+                  
+                  {/* Left Column: Direct Info */}
+                  <div className="lg:col-span-5">
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-50 text-teal-700 text-xs font-bold uppercase tracking-wider mb-4 border border-teal-200">
+                      <Stethoscope size={14} /> Practice Audit Intake
+                    </div>
                     
-                    <div className="space-y-6">
-                      <div className="flex items-center gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-100 hover:border-teal-200 transition-colors group">
-                        <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-teal-600 shadow-sm shrink-0 group-hover:bg-teal-600 group-hover:text-white transition-colors"><Phone size={24} /></div>
+                    <h2 className="text-4xl sm:text-5xl font-black text-slate-900 mb-4 leading-tight tracking-tight">
+                      Get Started <br/><span className="text-teal-600">Today.</span>
+                    </h2>
+                    <p className="text-slate-600 font-medium text-base mb-8">Tell us about your practice so we can analyze your billing workflow and identify lost revenue.</p>
+                    
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200">
+                        <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-teal-600 shadow-sm shrink-0 border border-slate-100"><Phone size={22} /></div>
                         <div>
-                          <div className="text-sm text-slate-500 font-bold uppercase tracking-wider mb-1">Call Us Directly</div>
-                          <a href={`tel:${SITE_CONFIG.contact.phoneUri}`} className="text-2xl font-black text-slate-900 hover:text-teal-600 transition-colors">{SITE_CONFIG.contact.phoneDisplay}</a>
+                          <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">Direct Line</div>
+                          <a href={`tel:${SITE_CONFIG.contact.phoneUri}`} className="text-lg sm:text-xl font-black text-slate-900 hover:text-teal-600 transition-colors">{SITE_CONFIG.contact.phoneDisplay}</a>
                         </div>
                       </div>
-                      <div className="flex items-center gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-100 hover:border-teal-200 transition-colors group">
-                        <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-teal-600 shadow-sm shrink-0 group-hover:bg-teal-600 group-hover:text-white transition-colors"><Mail size={24} /></div>
+
+                      <div className="flex items-center gap-4 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200">
+                        <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-teal-600 shadow-sm shrink-0 border border-slate-100"><Mail size={22} /></div>
                         <div>
-                          <div className="text-sm text-slate-500 font-bold uppercase tracking-wider mb-1">Email Our Team</div>
-                          <a href={`mailto:${SITE_CONFIG.contact.email}`} className="text-xl sm:text-2xl font-black text-slate-900 hover:text-teal-600 transition-colors">{SITE_CONFIG.contact.email}</a>
+                          <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">Audit Desk</div>
+                          <a href={`mailto:${SITE_CONFIG.contact.email}`} className="text-base sm:text-lg font-black text-slate-900 hover:text-teal-600 transition-colors break-all">{SITE_CONFIG.contact.email}</a>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div>
+                  {/* Right Column: Full Intake Form */}
+                  <div className="lg:col-span-7">
                     {formStatus === 'success' ? (
-                      <div className="text-center py-16 bg-teal-50 rounded-[2rem] border-2 border-teal-200 shadow-inner">
-                        <div className="w-24 h-24 bg-white text-teal-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-md"><CheckCircle2 size={48} /></div>
-                        <h3 className="text-3xl font-black text-slate-900 mb-3 tracking-tight">Request Submitted!</h3>
-                        <p className="text-slate-600 font-medium text-lg px-4">Our RCM specialists will contact you shortly.</p>
+                      <div className="text-center py-12 px-6 bg-teal-50 rounded-3xl border-2 border-teal-200">
+                        <div className="w-16 h-16 bg-teal-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-md"><CheckCircle2 size={36} /></div>
+                        <h3 className="text-2xl font-black text-slate-900 mb-2">Audit Request Received!</h3>
+                        <p className="text-slate-600 font-medium text-sm max-w-md mx-auto">Thank you, <strong>{formData.fullName}</strong>. An RCM specialist will review your details for <strong>{formData.practiceName || 'your practice'}</strong> and reach out within 1 business day.</p>
                       </div>
                     ) : (
-                      <form onSubmit={handleSubmit} className="space-y-6 bg-slate-900 p-8 sm:p-10 rounded-[2rem] text-white shadow-2xl">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-500/20 text-teal-400 text-xs font-bold uppercase tracking-widest mb-2 border border-teal-500/20">
-                          <Tag size={14} /> 50% Off First Audit
+                      <form onSubmit={handleSubmit} className="bg-slate-900 p-6 sm:p-8 rounded-3xl text-white shadow-2xl space-y-5 border border-slate-800">
+                        <div className="flex justify-between items-center pb-2 border-b border-slate-800">
+                          <h3 className="text-xl sm:text-2xl font-black text-white">Practice Information</h3>
+                          <span className="text-[10px] uppercase font-bold bg-teal-500/20 text-teal-300 px-2.5 py-1 rounded-md">Confidential & HIPAA Safe</span>
                         </div>
-                        <h3 className="text-3xl font-black mb-8 tracking-tight">Get Started Today</h3>
-                        
-                        <div className="grid sm:grid-cols-2 gap-5">
+
+                        {/* Name & Email */}
+                        <div className="grid sm:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Full Name</label>
-                            <input required type="text" placeholder="Dr. Jane Smith" className="w-full px-5 py-3.5 bg-slate-800/50 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-white placeholder:text-slate-500 font-medium transition-all" />
+                            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Full Name *</label>
+                            <input 
+                              required 
+                              type="text" 
+                              name="fullName"
+                              value={formData.fullName}
+                              onChange={handleInputChange}
+                              placeholder="Dr. Jane Smith" 
+                              className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-white placeholder:text-slate-500 font-medium text-sm transition-all" 
+                            />
                           </div>
                           <div>
-                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Work Email</label>
-                            <input required type="email" placeholder="jane@clinic.com" className="w-full px-5 py-3.5 bg-slate-800/50 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-white placeholder:text-slate-500 font-medium transition-all" />
+                            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Work Email *</label>
+                            <input 
+                              required 
+                              type="email" 
+                              name="workEmail"
+                              value={formData.workEmail}
+                              onChange={handleInputChange}
+                              placeholder="jane@clinic.com" 
+                              className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-white placeholder:text-slate-500 font-medium text-sm transition-all" 
+                            />
                           </div>
                         </div>
+
+                        {/* Phone & Practice Name */}
+                        <div className="grid sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Phone Number *</label>
+                            <input 
+                              required 
+                              type="tel" 
+                              name="phone"
+                              value={formData.phone}
+                              onChange={handleInputChange}
+                              placeholder="(555) 000-0000" 
+                              className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-white placeholder:text-slate-500 font-medium text-sm transition-all" 
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Practice Name *</label>
+                            <input 
+                              required 
+                              type="text" 
+                              name="practiceName"
+                              value={formData.practiceName}
+                              onChange={handleInputChange}
+                              placeholder="Apex Medical Group" 
+                              className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-white placeholder:text-slate-500 font-medium text-sm transition-all" 
+                            />
+                          </div>
+                        </div>
+
+                        {/* Specialty & Primary Service */}
+                        <div className="grid sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Medical Specialty</label>
+                            <input 
+                              type="text" 
+                              name="specialty"
+                              value={formData.specialty}
+                              onChange={handleInputChange}
+                              placeholder="e.g. Cardiology, Orthopedics, Primary Care" 
+                              className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-white placeholder:text-slate-500 font-medium text-sm transition-all" 
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Primary Need</label>
+                            <select 
+                              name="primaryService"
+                              value={formData.primaryService}
+                              onChange={handleInputChange}
+                              className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-white font-medium text-sm transition-all"
+                            >
+                              <option value="Full Revenue Cycle Management">Full Revenue Cycle Management</option>
+                              <option value="AR Backlog Clearance">AR Backlog Clearance</option>
+                              <option value="Claims Submission & Scrubbing">Claims Submission & Scrubbing</option>
+                              <option value="Credentialing Services">Credentialing Services</option>
+                              <option value="Insurance Verification">Insurance Verification</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        {/* Monthly Revenue & EHR System */}
+                        <div className="grid sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Monthly Billing Volume</label>
+                            <select 
+                              name="monthlyRevenue"
+                              value={formData.monthlyRevenue}
+                              onChange={handleInputChange}
+                              className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-white font-medium text-sm transition-all"
+                            >
+                              <option value="Under $50k">Under $50,000 / mo</option>
+                              <option value="$50k - $100k">$50,000 - $100,000 / mo</option>
+                              <option value="$100k - $250k">$100,000 - $250,000 / mo</option>
+                              <option value="$250k - $500k">$250,000 - $500,000 / mo</option>
+                              <option value="$500k+">$500,000+ / mo</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Current EHR System</label>
+                            <input 
+                              type="text" 
+                              name="ehrSystem"
+                              value={formData.ehrSystem}
+                              onChange={handleInputChange}
+                              placeholder="e.g. Epic, eClinicalWorks, Athena" 
+                              className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-white placeholder:text-slate-500 font-medium text-sm transition-all" 
+                            />
+                          </div>
+                        </div>
+
+                        {/* Message / Details */}
                         <div>
-                          <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Practice Name</label>
-                          <input required type="text" placeholder="Northside Medical Center" className="w-full px-5 py-3.5 bg-slate-800/50 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-white placeholder:text-slate-500 font-medium transition-all" />
+                          <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Current Challenges / Notes</label>
+                          <textarea 
+                            rows={3}
+                            name="notes"
+                            value={formData.notes}
+                            onChange={handleInputChange}
+                            placeholder="Tell us about high denial rates, aged claims, or staffing bottlenecks..." 
+                            className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-white placeholder:text-slate-500 font-medium text-sm transition-all resize-none"
+                          />
                         </div>
-                        <button type="submit" disabled={formStatus === 'submitting'} className="w-full bg-teal-500 text-slate-950 py-4.5 rounded-xl font-black text-lg hover:bg-teal-400 transition-all shadow-lg shadow-teal-500/20 active:scale-95 disabled:opacity-50 mt-4 flex items-center justify-center gap-2 h-14">
-                          {formStatus === 'submitting' ? 'Processing Securely...' : 'Request Audit Now'} {!formStatus.includes('submitting') && <ArrowRight size={20} />}
+
+                        <button 
+                          type="submit" 
+                          disabled={formStatus === 'submitting'} 
+                          className="w-full bg-teal-500 text-slate-950 py-4 rounded-xl font-black text-base hover:bg-teal-400 transition-all shadow-lg active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
+                        >
+                          {formStatus === 'submitting' ? 'Submitting Request...' : 'Request Practice Audit'} {!formStatus.includes('submitting') && <ArrowRight size={18} />}
                         </button>
                       </form>
                     )}
                   </div>
+
                 </div>
               </div>
             </div>
           </section>
 
           {/* 🟢 FAQ SECTION */}
-          <section id="faq" className="py-24 lg:py-32 bg-white border-t border-slate-200">
-             <div className="max-w-3xl mx-auto px-4">
-              <div className="text-center mb-16">
-                <h2 className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight">Frequently Asked Questions</h2>
+          <section id="faq" className="py-20 lg:py-28 bg-white border-t border-slate-200">
+            <div className="max-w-3xl mx-auto px-4">
+              <div className="text-center mb-14">
+                <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">Frequently Asked Questions</h2>
               </div>
 
               <div className="space-y-4">
                 {faqs.map((faq, idx) => (
-                  <div key={idx} className="border border-slate-200 bg-slate-50 rounded-2xl overflow-hidden shadow-sm hover:border-slate-300 transition-colors">
+                  <div key={idx} className="border border-slate-200 bg-slate-50 rounded-2xl overflow-hidden shadow-sm transition-colors">
                     <button 
                       onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
-                      className="w-full flex items-center justify-between p-6 sm:p-8 text-left hover:bg-slate-100 transition-colors"
+                      className="w-full flex items-center justify-between p-5 sm:p-7 text-left hover:bg-slate-100 transition-colors"
                     >
-                      <span className="font-bold text-slate-900 text-lg sm:text-xl pr-4">{faq.q}</span>
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors ${activeFaq === idx ? 'bg-teal-100 text-teal-700' : 'bg-slate-200 text-slate-500'}`}>
-                        <ChevronDown className={`transition-transform duration-300 ${activeFaq === idx ? 'rotate-180' : ''}`} size={24} />
+                      <span className="font-bold text-slate-900 text-base sm:text-lg pr-4">{faq.q}</span>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors ${activeFaq === idx ? 'bg-teal-100 text-teal-700' : 'bg-slate-200 text-slate-500'}`}>
+                        <ChevronDown className={`transition-transform duration-300 ${activeFaq === idx ? 'rotate-180' : ''}`} size={20} />
                       </div>
                     </button>
-                    <div 
-                      className={`overflow-hidden transition-all duration-300 ease-in-out ${activeFaq === idx ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
-                    >
-                      <div className="p-6 sm:p-8 pt-0 text-slate-600 font-medium leading-relaxed bg-slate-50 text-base sm:text-lg border-t border-slate-200/50">
+                    <div className={`overflow-hidden transition-all duration-300 ease-in-out ${activeFaq === idx ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+                      <div className="p-5 sm:p-7 pt-0 text-slate-600 font-medium leading-relaxed bg-slate-50 text-sm sm:text-base border-t border-slate-200/50">
                         {faq.a}
                       </div>
                     </div>
@@ -661,51 +849,61 @@ const App = () => {
       )}
 
       {/* 🟢 FOOTER */}
-      <footer className="bg-slate-950 text-slate-400 py-16 border-t border-slate-900">
+      <footer className="bg-slate-950 text-slate-400 py-12 sm:py-16 border-t border-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-10 mb-14">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
             
-            {/* Footer Logo */}
-            <div className="flex items-center gap-4 cursor-pointer group" onClick={() => { setCurrentView('home'); window.scrollTo({top: 0, behavior: 'smooth'}); }}>
+            {/* Logo */}
+            <div className="flex items-center gap-3 cursor-pointer group" onClick={() => { setCurrentView('home'); window.scrollTo({top: 0, behavior: 'smooth'}); }}>
               <img 
                 src={SITE_CONFIG.logoPath} 
                 alt={`${SITE_CONFIG.brandName} Logo`} 
-                className="w-12 h-12 rounded-full shadow-md group-hover:scale-105 transition-transform duration-300 object-cover bg-white"
+                className="w-10 h-10 rounded-full shadow-md group-hover:scale-105 transition-transform duration-300 object-cover bg-white"
                 onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
               />
-              {/* Fallback icon if logo image is missing */}
-              <div style={{display: 'none'}} className="w-12 h-12 bg-white rounded-full items-center justify-center text-teal-600 group-hover:scale-105 transition-transform duration-300">
-                <Activity size={24} strokeWidth={2.5} />
+              <div style={{display: 'none'}} className="w-10 h-10 bg-white rounded-full items-center justify-center text-teal-600 group-hover:scale-105 transition-transform duration-300">
+                <Activity size={22} strokeWidth={2.5} />
               </div>
               
               <div>
-                 <span className="text-2xl font-black text-white tracking-tight block">{SITE_CONFIG.brandName}</span>
-                 <span className="text-[9px] font-bold tracking-widest text-slate-500 uppercase block">{SITE_CONFIG.brandTagline}</span>
+                <span className="text-xl font-black text-white tracking-tight block">{SITE_CONFIG.brandName}</span>
+                <span className="text-[8px] font-bold tracking-widest text-slate-500 uppercase block">{SITE_CONFIG.brandTagline}</span>
               </div>
             </div>
 
-            {/* Footer Nav */}
-            <div className="flex flex-wrap justify-center gap-8 lg:gap-12 text-sm font-bold uppercase tracking-wider">
-              {SITE_CONFIG.navigation.slice(0, 3).map((nav, index) => (
+            {/* Nav */}
+            <div className="flex flex-wrap justify-center gap-6 text-xs sm:text-sm font-bold uppercase tracking-wider">
+              {SITE_CONFIG.navigation.map((nav, index) => (
                 <button key={index} onClick={() => handleScroll(nav.id)} className="hover:text-teal-400 transition-colors">{nav.label}</button>
               ))}
-              <button onClick={() => handleScroll('contact')} className="hover:text-teal-400 transition-colors">Contact</button>
             </div>
 
-            {/* Configured Social Icons */}
-            <div className="flex items-center gap-4">
-              <a href={SITE_CONFIG.socialLinks.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="bg-slate-900 border border-slate-800 p-3 rounded-xl text-slate-400 hover:bg-teal-600 hover:border-teal-600 hover:text-white transition-all shadow-sm">
-                <Facebook size={20} />
+            {/* Social Icons (Updated Links) */}
+            <div className="flex items-center gap-3">
+              <a 
+                href={SITE_CONFIG.socialLinks.facebook} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label="Facebook Page" 
+                className="bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-slate-400 hover:bg-teal-600 hover:border-teal-600 hover:text-white transition-all"
+              >
+                <Facebook size={18} />
               </a>
-              <a href={SITE_CONFIG.socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="bg-slate-900 border border-slate-800 p-3 rounded-xl text-slate-400 hover:bg-teal-600 hover:border-teal-600 hover:text-white transition-all shadow-sm">
-                <Instagram size={20} />
+              <a 
+                href={SITE_CONFIG.socialLinks.instagram} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label="Instagram Profile" 
+                className="bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-slate-400 hover:bg-teal-600 hover:border-teal-600 hover:text-white transition-all"
+              >
+                <Instagram size={18} />
               </a>
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-between items-center text-sm gap-6 pt-10 border-t border-slate-800 font-medium">
+          <div className="flex flex-col md:flex-row justify-between items-center text-xs sm:text-sm gap-4 pt-8 border-t border-slate-800 font-medium text-center md:text-left">
             <p>© {new Date().getFullYear()} {SITE_CONFIG.brandName} Revenue Cycle Management. HIPAA Compliant.</p>
-            <div className="flex gap-8">
+            <div className="flex gap-6">
               <button onClick={() => setCurrentView('terms')} className="hover:text-teal-400 transition-colors">Terms of Service</button>
               <button onClick={() => setCurrentView('privacy')} className="hover:text-teal-400 transition-colors">Privacy Policy</button>
             </div>
