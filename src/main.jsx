@@ -4,7 +4,7 @@ import {
   BarChart3, ShieldCheck, ClipboardCheck, TrendingUp, ChevronDown, 
   Phone, Mail, CheckCircle2, ArrowRight, Menu, X, CreditCard, Users, 
   Clock, Tag, AlertOctagon, UserMinus, Activity, DollarSign, FileText, 
-  Lock, Facebook, Instagram, Calculator
+  Lock, Facebook, Instagram, Calculator, Award
 } from 'lucide-react';
 
 // ==========================================
@@ -13,6 +13,7 @@ import {
 const SITE_CONFIG = {
   brandName: "MedyFlo",
   brandTagline: "Focus On Care. We Handle Billing.",
+  logoPath: "/logo.png", // <-- PLACEHOLDER: Put image_10.png in the public folder as 'logo.png'
   contact: {
     phoneDisplay: "(800) 555-2847",
     phoneUri: "8005552847",
@@ -20,7 +21,7 @@ const SITE_CONFIG = {
   },
   socialLinks: {
     facebook: "https://www.facebook.com/MedyFloRCM",
-    instagram: "https://www.instagram.com/medyflo/"
+    instagram: "https://www.instagram.com/medyflo/"
   },
   navigation: [
     { label: "Solutions", id: "solutions" },
@@ -41,8 +42,7 @@ const App = () => {
   const [monthlyRevenue, setMonthlyRevenue] = useState(150000);
   const [denialRate, setDenialRate] = useState(15);
   
-  // Accurate ROI Math: 
-  // Calculates lost revenue, then applies a realistic 65% recovery success rate by MedyFlo
+  // Accurate ROI Math
   const lostRevenue = monthlyRevenue * (denialRate / 100);
   const recoveryRate = 0.65; 
   const estimatedRecovery = Math.round(lostRevenue * recoveryRate);
@@ -149,8 +149,13 @@ const App = () => {
     },
     {
       icon: <TrendingUp />,
-      title: "AR Follow-up",
+      title: "AR Management",
       items: ["Aggressive Denials Team", "Corrected Claims", "Aging Bucket Resolution"]
+    },
+    {
+      icon: <Award />,
+      title: "Credentialing",
+      items: ["Provider Enrollment", "Medicare & Medicaid", "CAQH Maintenance"]
     }
   ];
 
@@ -168,6 +173,10 @@ const App = () => {
       a: "Yes, 100%. All data transmission, cloud storage, and handling procedures adhere strictly to HIPAA regulations to safeguard patient health information."
     },
     {
+      q: "How long does it take to clear the AR Backlog?",
+      a: "It usually takes 30-90 days depending on the insurance company's turn-around time and the practice's complexity."
+    },
+    {
       q: "Is there a long-term commitment required?",
       a: "No long-term contracts are required. We believe in earning your business month after month through measurable performance and recovered revenue."
     }
@@ -180,10 +189,20 @@ const App = () => {
       <header className="fixed w-full z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
+            
+            {/* Logo Area */}
             <div className="flex items-center gap-3 cursor-pointer group" onClick={() => { setCurrentView('home'); window.scrollTo({top: 0, behavior: 'smooth'}); }}>
-              <div className="w-11 h-11 bg-slate-900 rounded-xl flex items-center justify-center text-teal-400 shadow-md group-hover:scale-105 transition-transform duration-300">
+              <img 
+                src={SITE_CONFIG.logoPath} 
+                alt={`${SITE_CONFIG.brandName} Logo`} 
+                className="w-12 h-12 rounded-full shadow-md group-hover:scale-105 transition-transform duration-300 object-cover bg-white"
+                onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+              />
+              {/* Fallback icon if logo image is missing */}
+              <div style={{display: 'none'}} className="w-11 h-11 bg-slate-900 rounded-full items-center justify-center text-teal-400 shadow-md group-hover:scale-105 transition-transform duration-300">
                 <Activity size={24} strokeWidth={2.5} />
               </div>
+
               <div>
                 <div className="text-2xl font-extrabold tracking-tight text-slate-900 flex items-center">
                   {SITE_CONFIG.brandName.substring(0, 4)}<span className="text-teal-600">{SITE_CONFIG.brandName.substring(4)}</span>
@@ -415,7 +434,8 @@ const App = () => {
                 <p className="text-xl text-slate-600 font-bold">Accuracy meets aggression in revenue recovery.</p>
               </div>
               
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {/* Using auto-fit style grid layout to handle 5 items elegantly */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {coreServices.map((service, idx) => (
                   <div key={idx} className="bg-slate-50 p-8 rounded-[2rem] border border-slate-200 hover:shadow-2xl hover:border-teal-400 hover:-translate-y-2 transition-all duration-300 group flex flex-col justify-between cursor-default">
                     <div>
@@ -647,9 +667,17 @@ const App = () => {
             
             {/* Footer Logo */}
             <div className="flex items-center gap-4 cursor-pointer group" onClick={() => { setCurrentView('home'); window.scrollTo({top: 0, behavior: 'smooth'}); }}>
-              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-teal-600 group-hover:scale-105 transition-transform duration-300">
+              <img 
+                src={SITE_CONFIG.logoPath} 
+                alt={`${SITE_CONFIG.brandName} Logo`} 
+                className="w-12 h-12 rounded-full shadow-md group-hover:scale-105 transition-transform duration-300 object-cover bg-white"
+                onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+              />
+              {/* Fallback icon if logo image is missing */}
+              <div style={{display: 'none'}} className="w-12 h-12 bg-white rounded-full items-center justify-center text-teal-600 group-hover:scale-105 transition-transform duration-300">
                 <Activity size={24} strokeWidth={2.5} />
               </div>
+              
               <div>
                  <span className="text-2xl font-black text-white tracking-tight block">{SITE_CONFIG.brandName}</span>
                  <span className="text-[9px] font-bold tracking-widest text-slate-500 uppercase block">{SITE_CONFIG.brandTagline}</span>
