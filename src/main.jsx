@@ -305,7 +305,7 @@ const App = () => {
                 onClick={() => handleScroll('contact')}
                 className="bg-teal-600 text-white px-5 py-2.5 rounded-full font-bold text-xs sm:text-sm hover:bg-teal-700 transition-all shadow-lg shadow-teal-600/20 active:scale-95 flex items-center gap-1.5"
               >
-                <Sparkles size={14} /> Get 50% Off on First Audit
+                Get 50% Off on First Audit
               </button>
             </nav>
 
@@ -339,7 +339,7 @@ const App = () => {
               onClick={() => handleScroll('contact')}
               className="bg-teal-600 text-white px-6 py-3.5 rounded-full font-black text-sm shadow-lg shadow-teal-600/20 w-full mt-2 flex items-center justify-center gap-2"
             >
-              <Sparkles size={16} /> Get 50% Off on First Audit
+              Get 50% Off on First Audit
             </button>
           </nav>
         )}
@@ -699,7 +699,7 @@ const App = () => {
                   <div className="lg:col-span-5">
                     {/* Visible offer banner on all screens */}
                     <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500 text-slate-950 text-xs sm:text-sm font-black uppercase tracking-wider mb-6 shadow-sm">
-                      <Sparkles size={16} /> Get 50% Off on First Audit
+                      Get 50% Off on First Audit
                     </div>
                     
                     <h2 className="text-4xl sm:text-5xl font-black text-slate-900 mb-4 leading-tight tracking-tight">
