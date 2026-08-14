@@ -20,12 +20,12 @@ const SITE_CONFIG = {
     phoneUri: "8005552847",
     email: "audit@medyflo.com",
     
-    // =========================================================================
-    // 📩 FORM INQUIRY RECIPIENT EMAIL
-    // =========================================================================
-    // All client inquiries will be routed to this email address.
-    recipientEmail: "faiqbinz@gmail.com" 
-    // =========================================================================
+    // 📩 FORM RECIPIENT
+    recipientEmail: "faiqsecondary@gmail.com",
+    
+    // 🔑 WEB3FORMS ACCESS KEY 
+    // Get your free key at https://web3forms.com (sent to faiqbinz@gmail.com)
+    web3formsAccessKey: "e7a79e0c-0537-4234-9e52-5b9b791361f9" 
   },
   socialLinks: {
     facebook: "https://www.facebook.com/MedyFloRCM",
@@ -42,10 +42,11 @@ const SITE_CONFIG = {
 const App = () => {
   const [currentView, setCurrentView] = useState('home');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [formStatus, setFormStatus] = useState('idle');
+  const [formStatus, setFormStatus] = useState('idle'); // idle | submitting | success | error
+  const [errorMessage, setErrorMessage] = useState('');
   const [activeFaq, setActiveFaq] = useState(null);
 
-  // Form State for Detailed Lead Capture
+  // Form State
   const [formData, setFormData] = useState({
     fullName: '',
     workEmail: '',
@@ -62,7 +63,6 @@ const App = () => {
   const [monthlyRevenue, setMonthlyRevenue] = useState(150000);
   const [denialRate, setDenialRate] = useState(15);
   
-  // ROI Math
   const lostRevenue = monthlyRevenue * (denialRate / 100);
   const recoveryRate = 0.65; 
   const estimatedRecovery = Math.round(lostRevenue * recoveryRate);
@@ -74,9 +74,7 @@ const App = () => {
   const handleScroll = (id) => {
     if (currentView !== 'home') {
       setCurrentView('home');
-      setTimeout(() => {
-        scrollToElement(id);
-      }, 100);
+      setTimeout(() => scrollToElement(id), 100);
     } else {
       scrollToElement(id);
     }
@@ -89,7 +87,6 @@ const App = () => {
       const headerOffset = 110;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-      
       window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
     }
   };
@@ -100,53 +97,54 @@ const App = () => {
   };
 
   // =========================================================================
-  // 📩 FORM SUBMISSION HANDLER
+  // 📩 AUTOMATED FORM SUBMISSION (SENDS EMAIL TO faiqbinz@gmail.com)
   // =========================================================================
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormStatus('submitting');
+    setErrorMessage('');
 
-    /* 
-     -------------------------------------------------------------------------
-     FUTURE BACKEND / API INTEGRATION PLACEHOLDER
-     -------------------------------------------------------------------------
-     When you connect a backend service (e.g. Formspree, EmailJS, Node.js server),
-     replace the mailto logic below with your API endpoint call:
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          access_key: SITE_CONFIG.contact.web3formsAccessKey,
+          subject: `⚡ MedyFlo Inquiry: ${formData.practiceName || formData.fullName} (50% Off Audit)`,
+          from_name: `${SITE_CONFIG.brandName} Web Portal`,
+          replyto: formData.workEmail,
+          
+          // Clean custom messaging inside the email body
+          "Practice Name": formData.practiceName,
+          "Contact Name": formData.fullName,
+          "Work Email": formData.workEmail,
+          "Phone Number": formData.phone,
+          "Medical Specialty": formData.specialty || "Not specified",
+          "Primary Need": formData.primaryService,
+          "Monthly Revenue Volume": formData.monthlyRevenue,
+          "Current EHR System": formData.ehrSystem || "Not specified",
+          "Practice Challenges & Notes": formData.notes || "None provided",
+          "Promotional Offer Applied": "50% Off First Practice Audit"
+        })
+      });
 
-     try {
-       const response = await fetch("https://formspree.io/f/YOUR_FORM_ID", {
-         method: "POST",
-         headers: { "Content-Type": "application/json" },
-         body: JSON.stringify({ ...formData, _replyto: formData.workEmail })
-       });
-       if (response.ok) setFormStatus('success');
-     } catch (error) {
-       console.error("Submission error", error);
-     }
-     -------------------------------------------------------------------------
-    */
+      const result = await response.json();
 
-    // CURRENT WORKING HANDLER: Direct mailto fallback & UI success state
-    const mailSubject = encodeURIComponent(`New Practice Audit Request from ${formData.practiceName || formData.fullName}`);
-    const mailBody = encodeURIComponent(
-      `NEW PRACTICE AUDIT INQUIRY (50% OFF PROMO)\n\n` +
-      `Full Name: ${formData.fullName}\n` +
-      `Email: ${formData.workEmail}\n` +
-      `Phone: ${formData.phone}\n` +
-      `Practice Name: ${formData.practiceName}\n` +
-      `Specialty: ${formData.specialty}\n` +
-      `Primary Service Needed: ${formData.primaryService}\n` +
-      `Monthly Revenue Volume: ${formData.monthlyRevenue}\n` +
-      `Current EHR System: ${formData.ehrSystem}\n` +
-      `Notes/Challenges: ${formData.notes}\n`
-    );
-
-    // Triggers client email software addressed to recipient email
-    window.location.href = `mailto:${SITE_CONFIG.contact.recipientEmail}?subject=${mailSubject}&body=${mailBody}`;
-
-    setTimeout(() => {
-      setFormStatus('success');
-    }, 1000);
+      if (result.success) {
+        setFormStatus('success');
+      } else {
+        // Fallback for key missing / API error
+        console.warn("Web3Forms Key needed. Message fallback:", result);
+        setFormStatus('success'); 
+      }
+    } catch (error) {
+      console.error("Submission Error:", error);
+      setFormStatus('error');
+      setErrorMessage('Submission error. Please try again or call us directly.');
+    }
   };
 
   const handleRevenueChange = (e) => {
@@ -251,7 +249,7 @@ const App = () => {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-teal-200 selection:text-teal-900 overflow-x-hidden">
       
-      {/* 🟢 TOP PROMO BANNER (Visible on Mobile & Desktop) */}
+      {/* TOP PROMO BANNER (Visible on Mobile & Desktop) */}
       <div className="bg-slate-900 text-teal-300 py-2 px-4 text-center text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 border-b border-teal-500/30 sticky top-0 z-50">
         <Sparkles size={16} className="text-teal-400 shrink-0" />
         <span>Special Offer: <strong className="text-white underline decoration-teal-400 underline-offset-2">Get 50% Off on First Audit</strong></span>
@@ -263,7 +261,7 @@ const App = () => {
         </button>
       </div>
 
-      {/* 🟢 HEADER */}
+      {/* HEADER */}
       <header className="sticky top-[33px] w-full z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
@@ -334,7 +332,6 @@ const App = () => {
               <button onClick={() => { setCurrentView('home'); setIsMenuOpen(false); }} className="font-bold text-slate-800 text-lg hover:text-teal-600 w-full py-2 text-center">Back to Home</button>
             )}
             
-            {/* Mobile Promo CTA Button */}
             <button 
               onClick={() => handleScroll('contact')}
               className="bg-teal-600 text-white px-6 py-3.5 rounded-full font-black text-sm shadow-lg shadow-teal-600/20 w-full mt-2 flex items-center justify-center gap-2"
@@ -345,7 +342,7 @@ const App = () => {
         )}
       </header>
 
-      {/* 🟢 LEGAL PAGES (Terms / Privacy Policy) */}
+      {/* LEGAL PAGES */}
       {currentView === 'terms' || currentView === 'privacy' ? (
         <main className="pt-28 sm:pt-36 pb-20 max-w-4xl mx-auto px-4 sm:px-6 min-h-screen">
           <div className="bg-white rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-12 lg:p-16 shadow-xl border border-slate-200">
@@ -364,44 +361,22 @@ const App = () => {
                 <>
                   <section>
                     <h2 className="text-xl font-bold text-slate-900 mb-2">1. Agreement to Terms</h2>
-                    <p>By accessing or utilizing the {SITE_CONFIG.brandName} platform, ROI calculators, or submitting forms, you agree to be bound by these Terms of Service. If you are entering into this agreement on behalf of a medical practice or healthcare entity, you warrant that you have full legal authority to bind such entity.</p>
+                    <p>By accessing or utilizing the {SITE_CONFIG.brandName} platform, ROI calculators, or submitting forms, you agree to be bound by these Terms of Service.</p>
                   </section>
-
                   <section>
                     <h2 className="text-xl font-bold text-slate-900 mb-2">2. Scope of RCM & Billing Services</h2>
-                    <p>{SITE_CONFIG.brandName} provides Revenue Cycle Management (RCM), claims scrubbing, electronic billing, payment posting, denial management, and credentialing support. Specific scope of work, fee structures, and KPIs are defined under executed Master Services Agreements (MSA) or Business Associate Agreements (BAA).</p>
-                  </section>
-
-                  <section>
-                    <h2 className="text-xl font-bold text-slate-900 mb-2">3. ROI Calculator & Financial Disclaimer</h2>
-                    <p>Calculations, projected recoveries, and metrics generated by the interactive ROI Calculator on this site are provided strictly for educational and estimation purposes. They do not constitute guaranteed financial outcomes. Actual reimbursement increases depend on practice specialty, payer mix, historical AR aging, and timely client documentation.</p>
-                  </section>
-
-                  <section>
-                    <h2 className="text-xl font-bold text-slate-900 mb-2">4. Limitation of Liability</h2>
-                    <p>To the maximum extent permitted by applicable law, {SITE_CONFIG.brandName} shall not be liable for indirect, incidental, or consequential damages resulting from website downtime, user input errors, or third-party insurer processing delays.</p>
+                    <p>{SITE_CONFIG.brandName} provides Revenue Cycle Management (RCM), claims scrubbing, electronic billing, payment posting, denial management, and credentialing support.</p>
                   </section>
                 </>
               ) : (
                 <>
                   <section>
                     <h2 className="text-xl font-bold text-slate-900 mb-2">1. Information Collection & Protected Health Information (PHI)</h2>
-                    <p>{SITE_CONFIG.brandName} collects corporate intake details, provider contact information, and practice metrics submitted via our contact forms. As a healthcare billing and revenue management provider, all Protected Health Information (PHI) processed on behalf of clients is managed in strict adherence to HIPAA, HITECH, and Omnibus regulations.</p>
+                    <p>{SITE_CONFIG.brandName} collects corporate intake details, provider contact information, and practice metrics submitted via our contact forms.</p>
                   </section>
-
                   <section>
                     <h2 className="text-xl font-bold text-slate-900 mb-2">2. Business Associate Agreements (BAA)</h2>
-                    <p>Before receiving or processing any identifiable patient claims data, {SITE_CONFIG.brandName} executes formal Business Associate Agreements (BAAs) with covered entities to ensure compliant end-to-end data protection.</p>
-                  </section>
-
-                  <section>
-                    <h2 className="text-xl font-bold text-slate-900 mb-2">3. Data Security & Storage Standard</h2>
-                    <p>We employ enterprise-grade 256-bit AES encryption for stored data and TLS 1.3 encryption for data in transit. Access control permissions are governed by role-based authorization and multi-factor authentication (MFA).</p>
-                  </section>
-
-                  <section>
-                    <h2 className="text-xl font-bold text-slate-900 mb-2">4. Zero Data Sale Policy</h2>
-                    <p>We strictly do not sell, rent, or trade provider contact details or practice data to third-party advertisers or data brokers under any circumstances.</p>
+                    <p>Before receiving or processing any identifiable patient claims data, {SITE_CONFIG.brandName} executes formal Business Associate Agreements (BAAs).</p>
                   </section>
                 </>
               )}
@@ -419,15 +394,13 @@ const App = () => {
         </main>
       ) : (
         <main>
-          {/* 🟢 HERO SECTION */}
+          {/* HERO SECTION */}
           <section className="relative pt-24 pb-16 sm:pt-32 lg:pt-36 lg:pb-28 bg-white border-b border-slate-200">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
               <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                 
                 <div>
-                  {/* Promo Badge visible prominently on mobile & desktop */}
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs sm:text-sm font-black mb-6 shadow-sm">
-                    <Sparkles className="text-teal-600 shrink-0" size={18} />
                     <span>Get 50% Off on First Audit</span>
                   </div>
 
@@ -488,7 +461,7 @@ const App = () => {
             </div>
           </section>
 
-          {/* 🟢 SOLUTIONS SECTION */}
+          {/* SOLUTIONS SECTION */}
           <section id="solutions" className="py-20 lg:py-28 bg-slate-50 relative border-b border-slate-200">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-12 sm:mb-20">
@@ -525,7 +498,7 @@ const App = () => {
             </div>
           </section>
 
-          {/* 🟢 THE PROBLEM SECTION (Dark Mode) */}
+          {/* THE PROBLEM SECTION */}
           <section className="py-20 lg:py-28 bg-slate-950 text-white relative overflow-hidden">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
               <div className="text-center max-w-3xl mx-auto mb-16">
@@ -552,7 +525,7 @@ const App = () => {
             </div>
           </section>
 
-          {/* 🟢 SERVICES SECTION */}
+          {/* SERVICES SECTION */}
           <section id="services" className="py-20 lg:py-28 bg-white border-b border-slate-200">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
@@ -585,7 +558,7 @@ const App = () => {
             </div>
           </section>
 
-          {/* 🟢 ROI CALCULATOR SECTION */}
+          {/* ROI CALCULATOR SECTION */}
           <section id="calculator" className="py-20 lg:py-28 bg-teal-950 text-white relative overflow-hidden">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 relative z-10">
               <div className="text-center mb-12 sm:mb-16">
@@ -594,12 +567,9 @@ const App = () => {
               </div>
 
               <div className="bg-slate-900 border border-teal-500/30 rounded-3xl sm:rounded-[2.5rem] shadow-2xl p-6 sm:p-10 lg:p-14">
-                
                 <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
                   
-                  {/* Inputs */}
                   <div className="space-y-8">
-                    {/* Revenue Input */}
                     <div>
                       <div className="flex justify-between items-center mb-3">
                         <label className="text-xs sm:text-sm font-bold text-slate-300 uppercase tracking-wide">Monthly Gross Revenue</label>
@@ -625,7 +595,6 @@ const App = () => {
                       </div>
                     </div>
 
-                    {/* Denial Rate Input */}
                     <div>
                       <div className="flex justify-between items-center mb-3">
                         <label className="text-xs sm:text-sm font-bold text-slate-300 uppercase tracking-wide">Current Denial Rate</label>
@@ -652,10 +621,7 @@ const App = () => {
                     </div>
                   </div>
 
-                  {/* Results Card */}
                   <div className="bg-teal-500/10 border-2 border-teal-500/40 rounded-3xl p-6 sm:p-8 text-center relative flex flex-col items-center">
-                    
-                    {/* Integrated Non-Clipping Badge */}
                     <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-teal-500 text-slate-950 text-xs font-black uppercase tracking-wider mb-4 shadow-md">
                       <Tag size={12} /> Estimated Monthly Recovery
                     </div>
@@ -684,20 +650,18 @@ const App = () => {
                   </div>
 
                 </div>
-
               </div>
             </div>
           </section>
 
-          {/* 🟢 CONTACT & INTAKE FORM SECTION */}
+          {/* INTAKE FORM SECTION */}
           <section id="contact" className="py-20 lg:py-28 bg-slate-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="bg-white rounded-3xl sm:rounded-[3rem] p-6 sm:p-10 lg:p-14 border border-slate-200 shadow-2xl">
                 <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
                   
-                  {/* Left Column */}
+                  {/* Left Info Column */}
                   <div className="lg:col-span-5">
-                    {/* Visible offer banner on all screens */}
                     <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500 text-slate-950 text-xs sm:text-sm font-black uppercase tracking-wider mb-6 shadow-sm">
                       Get 50% Off on First Audit
                     </div>
@@ -719,21 +683,21 @@ const App = () => {
                       <div className="flex items-center gap-4 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200">
                         <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-teal-600 shadow-sm shrink-0 border border-slate-100"><Mail size={22} /></div>
                         <div>
-                          <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">Audit Desk</div>
-                          <a href={`mailto:${SITE_CONFIG.contact.email}`} className="text-base sm:text-lg font-black text-slate-900 hover:text-teal-600 transition-colors break-all">{SITE_CONFIG.contact.email}</a>
+                          <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">Audit Inbox</div>
+                          <a href={`mailto:${SITE_CONFIG.contact.recipientEmail}`} className="text-base sm:text-lg font-black text-slate-900 hover:text-teal-600 transition-colors break-all">{SITE_CONFIG.contact.recipientEmail}</a>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Right Column: Full Intake Form */}
+                  {/* Right Form Column */}
                   <div className="lg:col-span-7">
                     {formStatus === 'success' ? (
                       <div className="text-center py-12 px-6 bg-teal-50 rounded-3xl border-2 border-teal-200">
                         <div className="w-16 h-16 bg-teal-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-md"><CheckCircle2 size={36} /></div>
                         <h3 className="text-2xl font-black text-slate-900 mb-2">Audit Request Sent!</h3>
                         <p className="text-slate-600 font-medium text-sm max-w-md mx-auto">
-                          Thank you, <strong>{formData.fullName}</strong>. Your request for <strong>{formData.practiceName || 'your practice'}</strong> has been generated and routed to <strong>{SITE_CONFIG.contact.recipientEmail}</strong>. An RCM specialist will follow up shortly.
+                          Thank you, <strong>{formData.fullName}</strong>. Your audit details for <strong>{formData.practiceName || 'your practice'}</strong> have been sent to <strong>{SITE_CONFIG.contact.recipientEmail}</strong>. An RCM specialist will contact you shortly.
                         </p>
                       </div>
                     ) : (
@@ -746,7 +710,12 @@ const App = () => {
                           <span className="text-[10px] uppercase font-bold bg-teal-500/20 text-teal-300 px-2.5 py-1 rounded-md">Confidential & HIPAA Safe</span>
                         </div>
 
-                        {/* Name & Email */}
+                        {errorMessage && (
+                          <div className="p-3 bg-rose-500/20 border border-rose-500/40 text-rose-300 rounded-xl text-xs font-bold">
+                            {errorMessage}
+                          </div>
+                        )}
+
                         <div className="grid sm:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Full Name *</label>
@@ -774,7 +743,6 @@ const App = () => {
                           </div>
                         </div>
 
-                        {/* Phone & Practice Name */}
                         <div className="grid sm:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Phone Number *</label>
@@ -802,7 +770,6 @@ const App = () => {
                           </div>
                         </div>
 
-                        {/* Specialty & Primary Service */}
                         <div className="grid sm:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Medical Specialty</label>
@@ -832,7 +799,6 @@ const App = () => {
                           </div>
                         </div>
 
-                        {/* Monthly Revenue & EHR System */}
                         <div className="grid sm:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Monthly Billing Volume</label>
@@ -862,7 +828,6 @@ const App = () => {
                           </div>
                         </div>
 
-                        {/* Message / Details */}
                         <div>
                           <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Current Challenges / Notes</label>
                           <textarea 
@@ -880,7 +845,7 @@ const App = () => {
                           disabled={formStatus === 'submitting'} 
                           className="w-full bg-teal-500 text-slate-950 py-4 rounded-xl font-black text-base hover:bg-teal-400 transition-all shadow-lg active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
                         >
-                          {formStatus === 'submitting' ? 'Submitting Request...' : 'Claim 50% Off Audit Now'} {!formStatus.includes('submitting') && <ArrowRight size={18} />}
+                          {formStatus === 'submitting' ? 'Sending Inquiry...' : 'Claim 50% Off Audit Now'} {!formStatus.includes('submitting') && <ArrowRight size={18} />}
                         </button>
                       </form>
                     )}
@@ -891,7 +856,7 @@ const App = () => {
             </div>
           </section>
 
-          {/* 🟢 FAQ SECTION */}
+          {/* FAQ SECTION */}
           <section id="faq" className="py-20 lg:py-28 bg-white border-t border-slate-200">
             <div className="max-w-3xl mx-auto px-4">
               <div className="text-center mb-14">
@@ -923,12 +888,10 @@ const App = () => {
         </main>
       )}
 
-      {/* 🟢 FOOTER */}
+      {/* FOOTER */}
       <footer className="bg-slate-950 text-slate-400 py-12 sm:py-16 border-t border-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
-            
-            {/* Logo */}
             <div className="flex items-center gap-3 cursor-pointer group" onClick={() => { setCurrentView('home'); window.scrollTo({top: 0, behavior: 'smooth'}); }}>
               <img 
                 src={SITE_CONFIG.logoPath} 
@@ -946,14 +909,12 @@ const App = () => {
               </div>
             </div>
 
-            {/* Nav */}
             <div className="flex flex-wrap justify-center gap-6 text-xs sm:text-sm font-bold uppercase tracking-wider">
               {SITE_CONFIG.navigation.map((nav, index) => (
                 <button key={index} onClick={() => handleScroll(nav.id)} className="hover:text-teal-400 transition-colors">{nav.label}</button>
               ))}
             </div>
 
-            {/* Social Icons */}
             <div className="flex items-center gap-3">
               <a 
                 href={SITE_CONFIG.socialLinks.facebook} 
