@@ -4,7 +4,7 @@ import {
   BarChart3, ShieldCheck, ClipboardCheck, TrendingUp, ChevronDown, 
   Phone, Mail, CheckCircle2, ArrowRight, Menu, X, CreditCard, Users, 
   Clock, Tag, AlertOctagon, UserMinus, Activity, DollarSign, FileText, 
-  Lock, Facebook, Instagram, Calculator, Award, Building2, Stethoscope, 
+  Lock, Facebook, Instagram, Linkedin, Calculator, Award, Building2, Stethoscope, 
   Layers, HelpCircle, FileSpreadsheet, Sparkles
 } from 'lucide-react';
 
@@ -24,12 +24,12 @@ const SITE_CONFIG = {
     recipientEmail: "faiqsecondary@gmail.com",
     
     // 🔑 WEB3FORMS ACCESS KEY 
-    // Get your free key at https://web3forms.com (sent to faiqbinz@gmail.com)
     web3formsAccessKey: "e7a79e0c-0537-4234-9e52-5b9b791361f9" 
   },
   socialLinks: {
     facebook: "https://www.facebook.com/MedyFloRCM",
-    instagram: "https://www.instagram.com/medyflo/"
+    instagram: "https://www.instagram.com/medyflo/",
+    linkedin: "http://linkedin.com/company/medyflo"
   },
   navigation: [
     { label: "Solutions", id: "solutions" },
@@ -97,7 +97,7 @@ const App = () => {
   };
 
   // =========================================================================
-  // 📩 AUTOMATED FORM SUBMISSION (SENDS EMAIL TO faiqbinz@gmail.com)
+  // 📩 AUTOMATED FORM SUBMISSION (SENDS EMAIL TO faiqsecondary@gmail.com)
   // =========================================================================
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -117,7 +117,6 @@ const App = () => {
           from_name: `${SITE_CONFIG.brandName} Web Portal`,
           replyto: formData.workEmail,
           
-          // Clean custom messaging inside the email body
           "Practice Name": formData.practiceName,
           "Contact Name": formData.fullName,
           "Work Email": formData.workEmail,
@@ -136,8 +135,7 @@ const App = () => {
       if (result.success) {
         setFormStatus('success');
       } else {
-        // Fallback for key missing / API error
-        console.warn("Web3Forms Key needed. Message fallback:", result);
+        console.warn("Web3Forms Submission Issue:", result);
         setFormStatus('success'); 
       }
     } catch (error) {
@@ -249,7 +247,7 @@ const App = () => {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-teal-200 selection:text-teal-900 overflow-x-hidden">
       
-      {/* TOP PROMO BANNER (Visible on Mobile & Desktop) */}
+      {/* TOP PROMO BANNER */}
       <div className="bg-slate-900 text-teal-300 py-2 px-4 text-center text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 border-b border-teal-500/30 sticky top-0 z-50">
         <Sparkles size={16} className="text-teal-400 shrink-0" />
         <span>Special Offer: <strong className="text-white underline decoration-teal-400 underline-offset-2">Get 50% Off on First Audit</strong></span>
@@ -663,7 +661,7 @@ const App = () => {
                   {/* Left Info Column */}
                   <div className="lg:col-span-5">
                     <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500 text-slate-950 text-xs sm:text-sm font-black uppercase tracking-wider mb-6 shadow-sm">
-                      Get 50% Off on First Audit
+                      <Sparkles size={16} /> Get 50% Off on First Audit
                     </div>
                     
                     <h2 className="text-4xl sm:text-5xl font-black text-slate-900 mb-4 leading-tight tracking-tight">
@@ -933,6 +931,15 @@ const App = () => {
                 className="bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-slate-400 hover:bg-teal-600 hover:border-teal-600 hover:text-white transition-all"
               >
                 <Instagram size={18} />
+              </a>
+              <a 
+                href={SITE_CONFIG.socialLinks.linkedin} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label="LinkedIn Page" 
+                className="bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-slate-400 hover:bg-teal-600 hover:border-teal-600 hover:text-white transition-all"
+              >
+                <Linkedin size={18} />
               </a>
             </div>
           </div>
