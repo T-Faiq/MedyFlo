@@ -18,13 +18,13 @@ const SITE_CONFIG = {
   contact: {
     phoneDisplay: "(800) 555-2847",
     phoneUri: "8005552847",
-    email: "audit@medyflo.com",
+    email: "info@medyflo.com",
     
     // 📩 FORM RECIPIENT
-    recipientEmail: "faiqsecondary@gmail.com",
+    recipientEmail: "info@medyflo.com",
     
     // 🔑 WEB3FORMS ACCESS KEY 
-    web3formsAccessKey: "e7a79e0c-0537-4234-9e52-5b9b791361f9" 
+    web3formsAccessKey: "ff295be2-0e37-4aea-9db6-853c82d88f55" 
   },
   socialLinks: {
     facebook: "https://www.facebook.com/MedyFloRCM",
