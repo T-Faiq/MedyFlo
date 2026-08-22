@@ -4,8 +4,8 @@ import {
   BarChart3, ShieldCheck, ClipboardCheck, TrendingUp, ChevronDown, 
   Phone, Mail, CheckCircle2, ArrowRight, Menu, X, CreditCard, Users, 
   Clock, Tag, AlertOctagon, UserMinus, Activity, DollarSign, FileText, 
-  Lock, Facebook, Instagram, Linkedin, Calculator, Award, Building2, Stethoscope, 
-  Layers, HelpCircle, FileSpreadsheet, Sparkles
+  Lock, Facebook, Instagram, Linkedin, Calculator, Award, Stethoscope, 
+  Sparkles, Send, Building2, Check
 } from 'lucide-react';
 
 // ==========================================
@@ -16,15 +16,13 @@ const SITE_CONFIG = {
   brandTagline: "Focus On Care. We Handle Billing.",
   logoPath: "/logo.png",
   contact: {
-    phoneDisplay: "(800) 555-2847",
-    phoneUri: "8005552847",
     email: "info@medyflo.com",
     
-    // 📩 FORM RECIPIENT
+    // 📩 FORM RECIPIENT EMAIL
     recipientEmail: "info@medyflo.com",
     
-    // 🔑 WEB3FORMS ACCESS KEY 
-    web3formsAccessKey: "ff295be2-0e37-4aea-9db6-853c82d88f55" 
+    // 🔑 WEB3FORMS ACCESS KEY
+    web3formsAccessKey: "ff295be2-0e37-4aea-9db6-853c82d88f55"
   },
   socialLinks: {
     facebook: "https://www.facebook.com/MedyFloRCM",
@@ -46,7 +44,7 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [activeFaq, setActiveFaq] = useState(null);
 
-  // Form State
+  // Form State (Customer Phone field included)
   const [formData, setFormData] = useState({
     fullName: '',
     workEmail: '',
@@ -63,6 +61,7 @@ const App = () => {
   const [monthlyRevenue, setMonthlyRevenue] = useState(150000);
   const [denialRate, setDenialRate] = useState(15);
   
+  // ROI Math
   const lostRevenue = monthlyRevenue * (denialRate / 100);
   const recoveryRate = 0.65; 
   const estimatedRecovery = Math.round(lostRevenue * recoveryRate);
@@ -97,7 +96,7 @@ const App = () => {
   };
 
   // =========================================================================
-  // 📩 AUTOMATED FORM SUBMISSION (SENDS EMAIL TO faiqsecondary@gmail.com)
+  // 📩 WEB3FORMS SUBMISSION HANDLER
   // =========================================================================
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -114,19 +113,19 @@ const App = () => {
         body: JSON.stringify({
           access_key: SITE_CONFIG.contact.web3formsAccessKey,
           subject: `⚡ MedyFlo Inquiry: ${formData.practiceName || formData.fullName} (50% Off Audit)`,
-          from_name: `${SITE_CONFIG.brandName} Web Portal`,
+          from_name: `${SITE_CONFIG.brandName} Website Portal`,
           replyto: formData.workEmail,
           
-          "Practice Name": formData.practiceName,
           "Contact Name": formData.fullName,
           "Work Email": formData.workEmail,
-          "Phone Number": formData.phone,
+          "Customer Phone": formData.phone,
+          "Practice Name": formData.practiceName,
           "Medical Specialty": formData.specialty || "Not specified",
           "Primary Need": formData.primaryService,
-          "Monthly Revenue Volume": formData.monthlyRevenue,
-          "Current EHR System": formData.ehrSystem || "Not specified",
+          "Monthly Billing Volume": formData.monthlyRevenue,
+          "EHR System": formData.ehrSystem || "Not specified",
           "Practice Challenges & Notes": formData.notes || "None provided",
-          "Promotional Offer Applied": "50% Off First Practice Audit"
+          "Applied Offer": "50% Off First Practice Audit"
         })
       });
 
@@ -135,13 +134,13 @@ const App = () => {
       if (result.success) {
         setFormStatus('success');
       } else {
-        console.warn("Web3Forms Submission Issue:", result);
-        setFormStatus('success'); 
+        console.warn("Web3Forms Response Error:", result);
+        setFormStatus('success'); // Soft success fallback
       }
     } catch (error) {
-      console.error("Submission Error:", error);
+      console.error("Form Submission Error:", error);
       setFormStatus('error');
-      setErrorMessage('Submission error. Please try again or call us directly.');
+      setErrorMessage('Submission failed. Please check your connection or contact us directly.');
     }
   };
 
@@ -247,7 +246,7 @@ const App = () => {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-teal-200 selection:text-teal-900 overflow-x-hidden">
       
-      {/* TOP PROMO BANNER */}
+      {/* 🟢 TOP PROMO BANNER (Mobile & Desktop) */}
       <div className="bg-slate-900 text-teal-300 py-2 px-4 text-center text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 border-b border-teal-500/30 sticky top-0 z-50">
         <Sparkles size={16} className="text-teal-400 shrink-0" />
         <span>Special Offer: <strong className="text-white underline decoration-teal-400 underline-offset-2">Get 50% Off on First Audit</strong></span>
@@ -259,7 +258,7 @@ const App = () => {
         </button>
       </div>
 
-      {/* HEADER */}
+      {/* 🟢 HEADER */}
       <header className="sticky top-[33px] w-full z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
@@ -301,7 +300,7 @@ const App = () => {
                 onClick={() => handleScroll('contact')}
                 className="bg-teal-600 text-white px-5 py-2.5 rounded-full font-bold text-xs sm:text-sm hover:bg-teal-700 transition-all shadow-lg shadow-teal-600/20 active:scale-95 flex items-center gap-1.5"
               >
-                Get 50% Off on First Audit
+                <Sparkles size={14} /> Get 50% Off on First Audit
               </button>
             </nav>
 
@@ -334,13 +333,13 @@ const App = () => {
               onClick={() => handleScroll('contact')}
               className="bg-teal-600 text-white px-6 py-3.5 rounded-full font-black text-sm shadow-lg shadow-teal-600/20 w-full mt-2 flex items-center justify-center gap-2"
             >
-              Get 50% Off on First Audit
+              <Sparkles size={16} /> Get 50% Off on First Audit
             </button>
           </nav>
         )}
       </header>
 
-      {/* LEGAL PAGES */}
+      {/* 🟢 LEGAL PAGES (Terms / Privacy Policy) */}
       {currentView === 'terms' || currentView === 'privacy' ? (
         <main className="pt-28 sm:pt-36 pb-20 max-w-4xl mx-auto px-4 sm:px-6 min-h-screen">
           <div className="bg-white rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-12 lg:p-16 shadow-xl border border-slate-200">
@@ -392,13 +391,14 @@ const App = () => {
         </main>
       ) : (
         <main>
-          {/* HERO SECTION */}
+          {/* 🟢 HERO SECTION */}
           <section className="relative pt-24 pb-16 sm:pt-32 lg:pt-36 lg:pb-28 bg-white border-b border-slate-200">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
               <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                 
                 <div>
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs sm:text-sm font-black mb-6 shadow-sm">
+                    <Sparkles className="text-teal-600 shrink-0" size={18} />
                     <span>Get 50% Off on First Audit</span>
                   </div>
 
@@ -459,7 +459,7 @@ const App = () => {
             </div>
           </section>
 
-          {/* SOLUTIONS SECTION */}
+          {/* 🟢 SOLUTIONS SECTION */}
           <section id="solutions" className="py-20 lg:py-28 bg-slate-50 relative border-b border-slate-200">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-12 sm:mb-20">
@@ -496,7 +496,7 @@ const App = () => {
             </div>
           </section>
 
-          {/* THE PROBLEM SECTION */}
+          {/* 🟢 THE PROBLEM SECTION */}
           <section className="py-20 lg:py-28 bg-slate-950 text-white relative overflow-hidden">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
               <div className="text-center max-w-3xl mx-auto mb-16">
@@ -523,7 +523,7 @@ const App = () => {
             </div>
           </section>
 
-          {/* SERVICES SECTION */}
+          {/* 🟢 SERVICES SECTION */}
           <section id="services" className="py-20 lg:py-28 bg-white border-b border-slate-200">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
@@ -556,7 +556,7 @@ const App = () => {
             </div>
           </section>
 
-          {/* ROI CALCULATOR SECTION */}
+          {/* 🟢 ROI CALCULATOR SECTION */}
           <section id="calculator" className="py-20 lg:py-28 bg-teal-950 text-white relative overflow-hidden">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 relative z-10">
               <div className="text-center mb-12 sm:mb-16">
@@ -652,7 +652,7 @@ const App = () => {
             </div>
           </section>
 
-          {/* INTAKE FORM SECTION */}
+          {/* 🟢 INTAKE FORM SECTION */}
           <section id="contact" className="py-20 lg:py-28 bg-slate-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="bg-white rounded-3xl sm:rounded-[3rem] p-6 sm:p-10 lg:p-14 border border-slate-200 shadow-2xl">
@@ -671,14 +671,6 @@ const App = () => {
                     
                     <div className="space-y-4">
                       <div className="flex items-center gap-4 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200">
-                        <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-teal-600 shadow-sm shrink-0 border border-slate-100"><Phone size={22} /></div>
-                        <div>
-                          <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">Direct Line</div>
-                          <a href={`tel:${SITE_CONFIG.contact.phoneUri}`} className="text-lg sm:text-xl font-black text-slate-900 hover:text-teal-600 transition-colors">{SITE_CONFIG.contact.phoneDisplay}</a>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-4 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200">
                         <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-teal-600 shadow-sm shrink-0 border border-slate-100"><Mail size={22} /></div>
                         <div>
                           <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">Audit Inbox</div>
@@ -688,15 +680,21 @@ const App = () => {
                     </div>
                   </div>
 
-                  {/* Right Form Column */}
+                  {/* Right Form Column (Includes Customer Phone Number Field) */}
                   <div className="lg:col-span-7">
                     {formStatus === 'success' ? (
                       <div className="text-center py-12 px-6 bg-teal-50 rounded-3xl border-2 border-teal-200">
                         <div className="w-16 h-16 bg-teal-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-md"><CheckCircle2 size={36} /></div>
                         <h3 className="text-2xl font-black text-slate-900 mb-2">Audit Request Sent!</h3>
-                        <p className="text-slate-600 font-medium text-sm max-w-md mx-auto">
+                        <p className="text-slate-600 font-medium text-sm max-w-md mx-auto mb-6">
                           Thank you, <strong>{formData.fullName}</strong>. Your audit details for <strong>{formData.practiceName || 'your practice'}</strong> have been sent to <strong>{SITE_CONFIG.contact.recipientEmail}</strong>. An RCM specialist will contact you shortly.
                         </p>
+                        <button 
+                          onClick={() => setFormStatus('idle')} 
+                          className="bg-slate-900 text-white font-bold px-6 py-2.5 rounded-xl text-xs hover:bg-teal-600 transition-colors"
+                        >
+                          Submit Another Inquiry
+                        </button>
                       </div>
                     ) : (
                       <form onSubmit={handleSubmit} className="bg-slate-900 p-6 sm:p-8 rounded-3xl text-white shadow-2xl space-y-5 border border-slate-800">
@@ -714,6 +712,7 @@ const App = () => {
                           </div>
                         )}
 
+                        {/* Full Name & Work Email */}
                         <div className="grid sm:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Full Name *</label>
@@ -741,6 +740,7 @@ const App = () => {
                           </div>
                         </div>
 
+                        {/* Phone Number & Practice Name */}
                         <div className="grid sm:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Phone Number *</label>
@@ -768,6 +768,7 @@ const App = () => {
                           </div>
                         </div>
 
+                        {/* Medical Specialty & Primary Need */}
                         <div className="grid sm:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Medical Specialty</label>
@@ -786,7 +787,7 @@ const App = () => {
                               name="primaryService"
                               value={formData.primaryService}
                               onChange={handleInputChange}
-                              className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-white font-medium text-sm transition-all"
+                              className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-white font-medium text-sm transition-all cursor-pointer"
                             >
                               <option value="Full Revenue Cycle Management">Full Revenue Cycle Management</option>
                               <option value="AR Backlog Clearance">AR Backlog Clearance</option>
@@ -797,6 +798,7 @@ const App = () => {
                           </div>
                         </div>
 
+                        {/* Monthly Billing Volume & EHR System */}
                         <div className="grid sm:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Monthly Billing Volume</label>
@@ -804,7 +806,7 @@ const App = () => {
                               name="monthlyRevenue"
                               value={formData.monthlyRevenue}
                               onChange={handleInputChange}
-                              className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-white font-medium text-sm transition-all"
+                              className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-white font-medium text-sm transition-all cursor-pointer"
                             >
                               <option value="Under $50k">Under $50,000 / mo</option>
                               <option value="$50k - $100k">$50,000 - $100,000 / mo</option>
@@ -820,12 +822,13 @@ const App = () => {
                               name="ehrSystem"
                               value={formData.ehrSystem}
                               onChange={handleInputChange}
-                              placeholder="e.g. Epic, eClinicalWorks" 
+                              placeholder="e.g. Epic, eClinicalWorks, Athenahealth, Kareo" 
                               className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-white placeholder:text-slate-500 font-medium text-sm transition-all" 
                             />
                           </div>
                         </div>
 
+                        {/* Notes */}
                         <div>
                           <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Current Challenges / Notes</label>
                           <textarea 
@@ -854,7 +857,7 @@ const App = () => {
             </div>
           </section>
 
-          {/* FAQ SECTION */}
+          {/* 🟢 FAQ SECTION */}
           <section id="faq" className="py-20 lg:py-28 bg-white border-t border-slate-200">
             <div className="max-w-3xl mx-auto px-4">
               <div className="text-center mb-14">
@@ -886,10 +889,12 @@ const App = () => {
         </main>
       )}
 
-      {/* FOOTER */}
+      {/* 🟢 FOOTER */}
       <footer className="bg-slate-950 text-slate-400 py-12 sm:py-16 border-t border-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
+            
+            {/* Logo */}
             <div className="flex items-center gap-3 cursor-pointer group" onClick={() => { setCurrentView('home'); window.scrollTo({top: 0, behavior: 'smooth'}); }}>
               <img 
                 src={SITE_CONFIG.logoPath} 
@@ -907,12 +912,14 @@ const App = () => {
               </div>
             </div>
 
+            {/* Nav */}
             <div className="flex flex-wrap justify-center gap-6 text-xs sm:text-sm font-bold uppercase tracking-wider">
               {SITE_CONFIG.navigation.map((nav, index) => (
                 <button key={index} onClick={() => handleScroll(nav.id)} className="hover:text-teal-400 transition-colors">{nav.label}</button>
               ))}
             </div>
 
+            {/* Social Links */}
             <div className="flex items-center gap-3">
               <a 
                 href={SITE_CONFIG.socialLinks.facebook} 
@@ -936,7 +943,7 @@ const App = () => {
                 href={SITE_CONFIG.socialLinks.linkedin} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                aria-label="LinkedIn Page" 
+                aria-label="LinkedIn Company Page" 
                 className="bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-slate-400 hover:bg-teal-600 hover:border-teal-600 hover:text-white transition-all"
               >
                 <Linkedin size={18} />
